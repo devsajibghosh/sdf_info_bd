@@ -1,0 +1,170 @@
+{
+    "payment_pending": {
+        "title": "Payment Pending Message",
+        "fixed": true,
+        "builder": false,
+        "config": {
+            "text": { "type": "text" },
+            "description": {
+                "type": "textarea",
+                "label": "Description"
+            }
+        }
+    },
+    
+    "header_links": {
+        "title": "Header Contact Links",
+        "fixed": true,
+        "builder": true,
+        "config": {
+            "facebook": { "type": "text" },
+            "youtube": { "type": "text" },
+            "mobile": { "type": "text" },
+            "email": { "type": "text" }
+        }
+    },
+
+    "contact": {
+        "title": "Contact page content",
+        "fixed": false,
+        "builder": true,
+        "config": {
+            "heading1": { "type": "text" },
+            "heading2": { "type": "text" },
+            "heading3": { "type": "text" },
+            "address": { "type": "text" },
+            "phone": { "type": "text" },
+            "email": { "type": "text" },
+            "map_link": { "type": "text" }
+        }
+    },
+
+    "donation_category": {
+        "title": "Donation Category Section",
+        "fixed": false,
+        "builder": true,
+        "config": {
+            "heading": { "type": "text" },
+            "subheading": { "type": "text" }
+        }
+    },
+
+    "project": {
+        "title": "Project Section",
+        "fixed": false,
+        "builder": true,
+        "config": {
+            "heading": { "type": "text" },
+            "subheading": { "type": "text" }
+        }
+    },
+
+    "gallery": {
+        "title": "Gallery Section",
+        "fixed": false,
+        "builder": true,
+        "config": {
+            "heading": { "type": "text" },
+            "subheading": { "type": "text" }
+        }
+    },
+
+    "video": {
+        "title": "Video Section",
+        "fixed": false,
+        "builder": true,
+        "config": {
+            "heading": { "type": "text" },
+            "subheading": { "type": "text" },
+            "items": {
+                "type": "repeater",
+                "label": "Video",
+                "fields": {
+                    "title": { "type": "text" },
+                    "url": { "type": "text" }
+                }
+            }
+        }
+    },
+
+    "banner": {
+        "title": "Website Banner",
+        "fixed": true,
+        "builder": true,
+        "config": {
+            "items": {
+                "type": "repeater",
+                "label": "Banner Image",
+                "fields": {
+                    "photo": { "type": "image", "size": "1300x500" }
+                }
+            }
+        }
+    },
+
+    "about": {
+        "title": "About Section",
+        "fixed": false,
+        "builder": true,
+        "config": {
+            "heading": {
+                "type": "text",
+                "label": "FAQ Title"
+            },
+            "description": {
+                "type": "textarea",
+                "label": "Description"
+            },
+            "image": { "type": "image", "size": "450x450" }
+        }
+    },
+
+    "faq": {
+        "title": "Frequently Asked Questions",
+        "fixed": false,
+        "builder": true,
+        "config": {
+            "section_title": {
+                "type": "text",
+                "label": "FAQ Title"
+            },
+            "section_description": {
+                "type": "textarea",
+                "label": "Description"
+            },
+            "items": {
+                "type": "repeater",
+                "label": "Questions",
+                "fields": {
+                    "question": {
+                        "type": "text",
+                        "label": "Question"
+                    },
+                    "answer": {
+                        "type": "textarea",
+                        "label": "Answer"
+                    }
+                }
+            }
+        }
+    },
+
+    "testimonials": {
+        "title": "Customer Testimonials",
+        "builder": true,
+        "config": {
+            "section_title": { "type": "text", "label": "Title" },
+            "subtitle": { "type": "text", "label": "Subitle" },
+            "items": {
+                "type": "repeater",
+                "label": "Testimonials",
+                "fields": {
+                    "name": { "type": "text" },
+                    "designation": { "type": "text" },
+                    "photo": { "type": "image", "size": "150x150" },
+                    "feedback": { "type": "textarea" }
+                }
+            }
+        }
+    }
+}

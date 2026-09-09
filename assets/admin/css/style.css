@@ -1,0 +1,853 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+:root {
+    --primary-color: #09428bcc;
+    /* --primary-color: #205781; */
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    background: #f3f8ff;
+    font-family: "Inter", sans-serif;
+}
+
+/* Structure classes */
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-left: 250px;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    background: var(--primary-color);
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 0px;
+}
+
+.wrapper_toggle_btn {
+    position: absolute;
+    top: 25px;
+    left: 10px;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0px;
+    z-index: 111;
+}
+
+.wrapper_toggle_btn .icon-bar {
+    width: 25px;
+    height: 3px;
+    background: #273140;
+    margin: 5px;
+    display: block;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+
+/* Sidebar classes */
+#sidebar-wrapper {
+    /* Assuming this is styled elsewhere for position, background, etc. */
+    /* e.g., background-color: #222831; */
+}
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav li {
+    line-height: 50px; /* Defines height for main menu items */
+    margin: 0;
+    position: relative; /* For absolute positioning of .count */
+}
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%; /* Fill the li height */
+    padding: 0 15px; /* Horizontal padding */
+    text-decoration: none;
+    color: #e0e0e0; /* Lighter text color for better readability */
+    font-size: 14px;
+    font-weight: 500; /* Slightly less bold for default state */
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Styling for SVG icons (assuming <x-icons.* /> render SVG) */
+.sidebar-nav li a svg {
+    fill: #88a2b0; /* Default icon color (a bit muted) */
+    width: 18px;
+    height: 18px;
+    margin-right: 12px; /* Space between icon and text */
+    flex-shrink: 0; /* Prevent icon from shrinking */
+    transition: fill 0.3s ease;
+}
+
+.sidebar-nav li a > span:not(.count):not(.arrow) {
+    /* Target the text span */
+    flex-grow: 1; /* Allow text to take available space */
+}
+
+.sidebar-nav li a:hover,
+.sidebar-nav li a.active {
+    text-decoration: none;
+    color: #5cb8e6; /* Brighter, more distinct active/hover color */
+    background: #181e27; /* Darker background for active/hover state */
+}
+
+.sidebar-nav li a:hover svg,
+.sidebar-nav li a.active svg {
+    fill: #5cb8e6; /* Icon color matches text color on hover/active */
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+    outline: none; /* Remove focus outline if not desired */
+}
+
+/* Count badge style */
+.sidebar-nav li a .count {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #e74c3c; /* Red color for notification */
+    color: #ffffff;
+    border-radius: 12px; /* Pill shape or circle */
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px; /* Horizontal padding for numbers like '99+' */
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 20px; /* Vertically center text */
+    text-align: center;
+    box-sizing: border-box;
+    z-index: 1; /* Ensure it's above other elements if overlap occurs */
+}
+
+/* Sidebar Brand / Logo */
+.sidebar-nav > .sidebar-brand {
+    padding: 15px 15px; /* Adjusted padding */
+    height: auto; /* Allow li to size based on content */
+    line-height: normal; /* Override general li line-height */
+}
+
+.sidebar-nav > .sidebar-brand .logo {
+    max-height: 40px; /* Control logo size */
+    display: block; /* For centering if needed, or if link is block */
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    background: none; /* No background change on hover for brand */
+}
+
+/* Submenu Styles */
+.has-submenu > .submenu-toggle {
+    cursor: pointer;
+    justify-content: space-between; /* Pushes arrow to the right */
+}
+
+.has-submenu .arrow {
+    font-size: 0.7em; /* Smaller arrow */
+    margin-left: 8px;
+    transition: transform 0.25s ease-in-out;
+}
+
+.has-submenu.active > .submenu-toggle .arrow {
+    transform: rotate(180deg); /* Arrow points up when open */
+}
+
+.submenu {
+    list-style: none;
+    padding-left: 0; /* Remove default ul padding */
+    margin: 0;
+    display: none; /* Hidden by default, JS will toggle */
+    background-color: #1a2029; /* Slightly different background for submenu section */
+}
+
+.submenu li a {
+    padding: 0px 15px 0px 45px; /* More padding-left for indentation */
+    font-size: 0.9rem; /* Slightly smaller font for submenu items */
+    color: #b0bec5; /* Subtler color for submenu items */
+    height: 40px; /* Shorter height for submenu items */
+    line-height: 40px; /* Align text vertically */
+    font-weight: 400; /* Normal font weight for submenu items */
+}
+
+.submenu li a:hover,
+.submenu li a.active {
+    color: #5cb8e6; /* Active/hover color same as main links */
+    background-color: #202733; /* Slightly different active/hover bg for submenu */
+}
+
+/* Count badge within submenu items (inherits most styles, can be adjusted if needed) */
+.submenu li a .count {
+    right: 15px; /* Ensure it's positioned correctly */
+    /* Other properties like size, color can be overridden here if a different look is desired for submenu counts */
+}
+/* Header classes */
+.header {
+    background: #fff;
+    padding: 15px;
+}
+
+.search_bar {
+    margin-left: 54px;
+}
+
+.search_bar_input .input-group-addon {
+    background: white !important;
+    padding-right: 0px;
+    color: #ddd;
+    border: none;
+}
+
+.search_bar_input .input-group-addon button {
+    outline: none;
+}
+
+.search_bar_input .input-group-addon .fa {
+    font-size: 18px;
+}
+
+.search_bar_input .form-control {
+    border: none;
+    box-shadow: none;
+    border-color: #ccc;
+    height: 50px;
+    padding-left: 5px;
+    font-size: 16px;
+}
+
+.search_bar_input button {
+    border: 0;
+    background: transparent;
+}
+
+.search_bar_input .form-control::-webkit-input-placeholder {
+    color: #ddd;
+}
+
+.search_bar_input .form-control:-moz-placeholder {
+    color: #ddd;
+}
+
+.search_bar_input .form-control::-moz-placeholder {
+    color: #ddd;
+}
+
+.search_bar_input .form-control:-ms-input-placeholder {
+    color: #ddd;
+}
+
+.profile-overview {
+    margin-top: 10px;
+}
+
+.customm-dropdown .profile-pic {
+    width: 40px;
+    border-radius: 50%;
+    border: 4px solid #d2dbe2;
+    margin-right: -14px;
+    position: absolute;
+    left: -22px;
+    top: -4px;
+}
+
+.customm-dropdown .btn,
+.customm-dropdown .btn:focus {
+    border-radius: 50px;
+    background: #eaf3fa;
+    color: #616060;
+    font-weight: 500;
+    font-size: 12px;
+    padding: 7px 10px 5px 22px;
+    outline: none;
+    box-shadow: none;
+}
+
+.customm-dropdown .btn .caret {
+    color: #8cd6f3;
+    float: right;
+    text-align: right;
+    display: block;
+    margin-top: 7px;
+    margin-left: 4px;
+}
+
+.customm-dropdown .dropdown-menu > li > a {
+    display: block;
+    text-decoration: none;
+    color: #596d7c;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 10px 20px;
+}
+
+/* Content classes */
+.content-area {
+    padding-top: 15px;
+}
+
+.content-area > .row {
+    margin-bottom: 25px;
+}
+
+.overview-block {
+    background: #fff;
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+}
+
+.overview-left {
+    background: #f9fafb;
+}
+
+.overview-icon {
+    color: #81bcf7;
+    background: #f3f5f7;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    width: 70px;
+    height: 70px;
+    font-size: 36px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.overview-right {
+    padding: 20px 25px;
+}
+
+.overview-right .overview-value {
+    margin: 10px 0px 10px 0px;
+    font-size: 24px;
+    font-weight: 400;
+    color: #748795;
+}
+
+.overview-right .overview-title {
+    color: #bdc6cc;
+    font-size: 12px;
+}
+
+.panel {
+    border-radius: 2px;
+}
+
+.panel-primary {
+    border-color: #596d7c;
+}
+
+.panel-primary > .panel-heading {
+    color: #fff;
+    background-color: #596d7c;
+    border-color: #596d7c;
+    padding: 15px;
+}
+
+.panel-default {
+    border-color: #d9d9d9;
+}
+
+.panel-default > .panel-heading {
+    color: #565e6a;
+    background-color: #f3f5f7;
+    border-color: #d9d9d9;
+    padding: 15px;
+}
+
+.panel-title {
+    text-transform: uppercase;
+}
+
+/* Footer classes */
+.footer {
+    padding: 10px 0px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.copy-text {
+    text-align: center;
+    color: #898f96;
+    font-size: 12px;
+    margin-bottom: 0px;
+}
+
+/* Media queries for large display */
+@media (min-width: 1400px) {
+    .content-area {
+        padding: 25px;
+    }
+
+    .overview-right .overview-value {
+        font-size: 28px;
+    }
+}
+
+@media (min-width: 768px) {
+    #wrapper {
+        padding-left: 250px;
+    }
+
+    #wrapper.toggled {
+        padding-left: 0;
+    }
+
+    #sidebar-wrapper {
+        width: 250px;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        width: 0;
+    }
+
+    #page-content-wrapper {
+        padding: 0px;
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+}
+
+/* Media queries for medium display */
+@media (min-width: 768px) and (max-width: 991px) {
+}
+
+/* Media queries for small (Tab/Mobile) display */
+@media (max-width: 768px) {
+    .profile-overview {
+        margin-top: 0px;
+    }
+
+    .wrapper_toggle_btn {
+        top: 15px;
+    }
+
+    .content-area {
+        padding-top: 15px;
+    }
+
+    .overview-right {
+        padding: 15px 40px;
+    }
+
+    .overview-right .overview-value {
+        font-size: 32px;
+    }
+}
+
+.v2-btn {
+    --background-color: #205781;
+    color: #f0f0f0;
+    border-radius: 4px;
+    border: 0;
+    background-color: var(--background-color);
+}
+
+.v2-btn.btn-danger {
+    --background-color: #cb0404;
+}
+
+.v2-btn.btn-info {
+    --background-color: #067ae7;
+}
+
+.v2-btn:focus,
+.v2-btn:active,
+.v2-btn:hover {
+    color: #f0f0f0 !important;
+    border: 0 !important;
+    background-color: var(--background-color) !important;
+}
+
+.v2-btn:hover {
+    opacity: 0.8;
+}
+
+.table-card {
+    border: none;
+    border-radius: 4px;
+}
+
+.table-image-cell {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    --square: 40px;
+}
+
+.table-image-cell img {
+    width: var(--square);
+    height: var(--square);
+    border-radius: 50%;
+}
+
+.skeleton-line {
+    background: linear-gradient(90deg, #e0e0e0 25%, #f8f8f8 50%, #e0e0e0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+table.dataTable {
+    width: 100% !important;
+}
+
+.card-header:not(.admin-card) {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    border: 0;
+    border-bottom: 1px solid #dedede;
+}
+
+.card {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+    /* box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px; */
+    border: 0;
+}
+
+table.dataTable th {
+    padding-right: 30px;
+    background: #f3f8ff;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0;
+}
+
+/** Admin header Nav */
+.header {
+    background-color: #f8f9fa;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.profile-pic {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border: 2px solid #dee2e6;
+    transition: transform 0.2s ease;
+}
+
+.profile-pic:hover {
+    transform: scale(1.05);
+}
+
+.dropdown-menu {
+    min-width: 200px;
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item i {
+    color: #6c757d;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+/** /end of admin header nav */
+
+.select2-container .select2-selection--single {
+    height: 37px;
+}
+
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
+    line-height: 37px;
+}
+
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__arrow {
+    height: inherit;
+}
+
+.select2-container--default .select2-selection--single {
+    border-color: #dee2e6;
+}
+
+/* jgrowl */
+.jGrowl {
+    /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
+    z-index: 9999;
+}
+
+.jGrowl-notification {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 16px 20px;
+    font-size: 14px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    color: #fff;
+}
+
+.jGrowl-notification:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.jGrowl-header {
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 16px;
+    color: inherit;
+}
+
+.jGrowl-closer {
+    background: transparent;
+    color: #fff;
+    font-size: 20px;
+    right: 10px;
+    top: 8px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.jGrowl-closer:hover {
+    opacity: 1;
+}
+
+/* Default background (info) */
+.jGrowl-notification {
+    background: #2b2b2b;
+}
+
+/* Success */
+.jgrowl-success {
+    background: #28a745 !important;
+}
+
+/* Error */
+.jgrowl-error {
+    background: #dc3545 !important;
+}
+
+/* Warning */
+.jgrowl-warning {
+    background: #ffc107 !important;
+    color: #000 !important;
+}
+
+.jgrowl-info {
+    background: #17a2b8 !important;
+}
+
+.software-sidebar {
+    position: sticky;
+    top: 10px;
+}
+
+/* responsive table */
+@media (max-width: 768px) {
+    table.table thead {
+        display: none;
+    }
+
+    table.table tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 0.5rem;
+    }
+
+    table.table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.4rem 0;
+        border: none;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    table.table tbody td:last-child {
+        border-bottom: none;
+    }
+
+    table.table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        flex: 0 0 45%;
+        color: #495057;
+    }
+
+    table.table tbody td.text-end {
+        justify-content: flex-end;
+    }
+
+    td[data-label="Action"]::before {
+        content: none !important;
+    }
+}
+
+/*  widgets */
+/* Container for all widgets */
+.widget {
+    text-decoration: none;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #1a2029;
+}
+
+.widget:hover {
+    transform: translateY(-2px);
+}
+
+/* Variant One - Default (Inline icon left) */
+.widget.one .widget-icon {
+    width: 50px;
+    height: 50px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.widget-icon svg {
+    width: 26px;
+    height: 26px;
+    stroke: #1f2937;
+}
+
+/* Text styles */
+.widget-content h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.widget-content p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Variant Two - With progress bar */
+.widget.two {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.widget.two .widget-content {
+    width: 100%;
+}
+
+.progress-bar {
+    width: 100%;
+    background: #e5e7eb;
+    border-radius: 4px;
+    height: 6px;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    height: 6px;
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
+}
+
+.ck-editor__editable {
+    min-height: 300px;
+}
+
+/* Variant Three - Center stacked */
+.widget.three {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+.widget.three .widget-icon.center {
+    margin-bottom: 10px;
+    width: 50px;
+    height: 50px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* custom table design */
+.table th {
+    font-size: .9rem;
+    color: #f0f0f0;
+    background-color: var(--primary-color);
+    border-right: 1px solid #919191;
+}
+
+.table td {
+    font-size: 0.9rem;
+}

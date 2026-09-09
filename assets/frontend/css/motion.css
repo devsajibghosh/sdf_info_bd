@@ -1,0 +1,126 @@
+/* ==========================================================================
+   Homepage Motion System — Sanatani Development Foundation
+   --------------------------------------------------------------------------
+   A small, purposeful set of reveal/hover primitives built ONLY on
+   transform + opacity (no layout-triggering properties), driven by
+   IntersectionObserver (see motion.js). Loaded only on the homepage.
+   Respects prefers-reduced-motion: content is never permanently hidden.
+   ========================================================================== */
+
+:root {
+    --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --motion-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+    --motion-fast: 0.2s;
+    --motion-medium: 0.7s;
+    --motion-distance: 24px;
+    --motion-stagger-step: 90ms;
+}
+
+@media (max-width: 767px) {
+    :root {
+        --motion-distance: 14px;
+        --motion-medium: 0.5s;
+        --motion-stagger-step: 60ms;
+    }
+}
+
+/* ---------- On-load entrance (for above-the-fold content, e.g. the quick-donate
+   card) — plays immediately on paint rather than waiting for scroll, since this
+   content is already in view when the page loads. Pure CSS, no JS needed. ---------- */
+
+@keyframes heroEnter {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-enter > * {
+    opacity: 0;
+    animation: heroEnter 0.7s var(--motion-ease) forwards;
+}
+
+.hero-enter > *:nth-child(1) { animation-delay: 0.05s; }
+.hero-enter > *:nth-child(2) { animation-delay: 0.2s; }
+.hero-enter > *:nth-child(3) { animation-delay: 0.35s; }
+.hero-enter > *:nth-child(4) { animation-delay: 0.5s; }
+.hero-enter > *:nth-child(n+5) { animation-delay: 0.6s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-enter > * {
+        opacity: 1;
+        animation: none;
+    }
+}
+
+/* ---------- Scroll reveal primitives ---------- */
+
+.reveal,
+.reveal-scale {
+    opacity: 0;
+    transition: opacity var(--motion-medium) var(--motion-ease),
+                transform var(--motion-medium) var(--motion-ease);
+}
+
+.reveal {
+    transform: translateY(var(--motion-distance));
+}
+
+.reveal-scale {
+    transform: scale(0.97);
+}
+
+.reveal.is-visible,
+.reveal-scale.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* Stagger a reveal group in sequence. transition-delay doesn't inherit, and
+   the ".reveal"/".reveal-scale" element is sometimes the direct child of the
+   group (e.g. a heading) and sometimes one level deeper (a card nested inside
+   a grid column) — both patterns are covered here. */
+.reveal-stagger > *:nth-child(1).reveal,      .reveal-stagger > *:nth-child(1).reveal-scale,
+.reveal-stagger > *:nth-child(1) > .reveal,   .reveal-stagger > *:nth-child(1) > .reveal-scale {
+    transition-delay: calc(var(--motion-stagger-step) * 0);
+}
+.reveal-stagger > *:nth-child(2).reveal,      .reveal-stagger > *:nth-child(2).reveal-scale,
+.reveal-stagger > *:nth-child(2) > .reveal,   .reveal-stagger > *:nth-child(2) > .reveal-scale {
+    transition-delay: calc(var(--motion-stagger-step) * 1);
+}
+.reveal-stagger > *:nth-child(3).reveal,      .reveal-stagger > *:nth-child(3).reveal-scale,
+.reveal-stagger > *:nth-child(3) > .reveal,   .reveal-stagger > *:nth-child(3) > .reveal-scale {
+    transition-delay: calc(var(--motion-stagger-step) * 2);
+}
+.reveal-stagger > *:nth-child(4).reveal,      .reveal-stagger > *:nth-child(4).reveal-scale,
+.reveal-stagger > *:nth-child(4) > .reveal,   .reveal-stagger > *:nth-child(4) > .reveal-scale {
+    transition-delay: calc(var(--motion-stagger-step) * 3);
+}
+.reveal-stagger > *:nth-child(5).reveal,      .reveal-stagger > *:nth-child(5).reveal-scale,
+.reveal-stagger > *:nth-child(5) > .reveal,   .reveal-stagger > *:nth-child(5) > .reveal-scale {
+    transition-delay: calc(var(--motion-stagger-step) * 4);
+}
+.reveal-stagger > *:nth-child(6).reveal,      .reveal-stagger > *:nth-child(6).reveal-scale,
+.reveal-stagger > *:nth-child(6) > .reveal,   .reveal-stagger > *:nth-child(6) > .reveal-scale {
+    transition-delay: calc(var(--motion-stagger-step) * 5);
+}
+.reveal-stagger > *:nth-child(n+7).reveal,    .reveal-stagger > *:nth-child(n+7).reveal-scale,
+.reveal-stagger > *:nth-child(n+7) > .reveal, .reveal-stagger > *:nth-child(n+7) > .reveal-scale {
+    transition-delay: calc(var(--motion-stagger-step) * 6);
+}
+
+/* ---------- Reduced motion: content stays fully visible, just no movement ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal-scale {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    #zoom-in-out img {
+        animation: none !important;
+    }
+
+    .slick-active .banner-slider__item img {
+        animation: none !important;
+    }
+}

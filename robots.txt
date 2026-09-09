@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /panel22/
+
+Sitemap: https://sdf.info.bd/sitemap.xml

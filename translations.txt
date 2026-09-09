@@ -1,0 +1,826 @@
+${placeholder}
+A complete record of your contributions. Thank you for your continued support.
+A new OTP has been sent to your phone number.
+A new verification link has been sent to your email address.
+ACL
+Abilities
+Abilities Generated
+About
+About Image
+Account Details
+Account Summary
+Action
+Actions
+Active
+Actor
+Add Blog Post
+Add Committe
+Add Donation Category
+Add Gallery Category
+Add Gallery Item
+Add New
+Add New Blog Post
+Add New Committee
+Add New Donation Category
+Add New Expense
+Add New Expense Category
+Add New Field
+Add New Gallery Category
+Add New Member
+Add New Notice
+Add New Page
+Add New Project
+Add a note
+Add meta keywords separted by commas
+Added By
+Additional Information
+Address
+Address Details
+Address Information
+Admin
+Admin Login
+Admin Logins
+Admin Password Reset
+Admins
+Affirmed to Donate
+Age
+All Admins
+All Districts
+All Divisions
+All Donations
+All Members
+All Upazilas
+Already Have An Account
+Amount
+Amount (BDT)
+Amount (Min 20tk)
+Approve
+Approved
+Approved By
+Approved Donations
+Approved Expenses
+Approx Date
+Approximate Date
+Are you sure you to do this action? This action cannot be undone.
+Assistant Professor
+Associate Professor
+Automatic Gateways
+Available Sections
+Back
+Back to login
+Balance Overview
+Bangla
+Bank Balance
+Bank Job
+Banner Image
+Barber
+Bengali
+Birth Certificate
+Blocked
+Blog Post Deleted
+Blog Posts
+Blood Group
+Browser
+Businessman
+Call Declined
+Call Later
+Call Logs
+Call Specific Date
+Call Status
+Call Time
+Call log created
+Call log deleted
+Called At
+Called By
+Cancel
+Cash Donation
+Category
+Category Saved Successfully
+Change Password
+Channel
+Chat on WhatsApp
+Choose an Amount
+Choose...
+City
+Click here to see meta information
+Close
+Code
+College Teacher
+Committe Deleted
+Committe created successfully.
+Committe updated successfully.
+Committee Details
+Committees
+Complete Your Profile
+Configuration Setting
+Configuration saved successfully
+Confirm
+Confirm & Proceed
+Confirm New Password
+Confirm Password
+Confirm Payment
+Confirm new password
+Confirm the new password
+Confirm the password
+Confiugration saved successfully
+Contact
+Contact Number
+Contact Submissions
+Contact Us
+Contact deleted
+Contribution
+Copy Keywords
+Copy to Clipboard
+Country
+Create Profile
+Create Role
+Created At
+Current Age
+Dashboard
+Data deleted succesfully
+Data saved successfully
+Data updated successfully
+Date
+Date Time
+Date of Birth
+Declined to Donate
+Default
+Delete
+Delete All
+Description
+Descriptoin
+Details
+Device Type
+Display Title
+District
+Division
+Doctor
+Don't Have An Account?
+Don\'t worry, it happens to the best of us. Let\'s get you back on track.
+Donate
+Donate Again
+Donate Now
+Donation
+Donation Amount
+Donation Cancelled
+Donation Categories
+Donation Category
+Donation Details
+Donation Failed
+Donation History
+Donation Meta Information
+Donation Receipt
+Donation Success
+Donation approved successfully
+Donation category created successfully.
+Donation category deleted
+Donation category updated successfully.
+Donation deleted successfully
+Donation rejected successfully
+Donation successfully saved
+Donations
+Donations imported
+Donator Name
+Donor
+Donor Details
+Donor Login
+Donor information saved successfully.
+Donors
+Donors Report(Live)
+Download
+Download Excel
+Download Max(20D)
+Download PDF
+Download Receipt
+Drag sections here to build your page.
+Driver
+Edit
+Edit Admin
+Edit Blog Post
+Edit Committe
+Edit Donation
+Edit Donation Category
+Edit Expense
+Edit Expense Category
+Edit Gallery
+Edit Gallery Category
+Edit Gallery Item
+Edit Member
+Edit Notice
+Edit Page
+Edit Payment Gateway
+Edit Profile
+Edit Project
+Edit Role
+Edit User
+Edit committe
+Edit donor
+Email
+Email / Phone Number
+Email Provider Configuration
+Email Verification Required
+Email verified successfully
+Enable Google reCAPTCHA
+Enable this for maintenace mode for the website
+Engineer
+English
+Enter OTP
+Enter Your New Password
+Enter a details for this category
+Enter a new password
+Enter a password
+Enter a phone number
+Enter a short desc
+Enter a short description
+Enter a short description for the payment gateway
+Enter a unique role name
+Enter amount
+Enter an username
+Enter call log for this user
+Enter category name
+Enter descriptoin
+Enter display title
+Enter email address
+Enter full name
+Enter gallery title or leave empty
+Enter meta description for this page
+Enter name
+Enter new password
+Enter page content
+Enter password
+Enter post title
+Enter project details
+Enter project title
+Enter the category name
+Enter the language code
+Enter the language name
+Enter the name
+Enter title
+Enter username
+Enter your email
+Enter your name
+Enter your old password
+Excel
+Expart
+Expense
+Expense Approved Successfully
+Expense Categories
+Expense Category Deleted
+Expense Category Saved
+Expense Deleted Successfully
+Expense Saved Successfully
+Expense Unapproved Successfully
+Expenses
+Expenses imported successfully
+Explore Details
+Explore Full Gallery
+Explore More
+Facebook
+Facebook ID link
+Failed
+Farmer
+Father Name
+Father name
+Father's Name
+Father\'s Name
+Female
+Field Collect
+Field Collection
+File
+Filter
+Finance Report(Auto)
+Financial Account Summary
+First Name
+Flag
+Follow us for updates
+Forgot Your Password?
+Forgot your password ?
+Forgotten Password
+Full Name
+Galleries
+Gallery
+Gallery Categories
+Gallery Category
+Gallery category created successfully.
+Gallery category deleted
+Gallery category updated successfully.
+Gallery created successfully.
+Gallery deleted
+Gallery updated successfully.
+Garments
+Gateway
+Gateway/Method
+Gender
+General Setting
+General settings updated successfully.
+Go to Donation Page
+Go to Home
+Go to Homepage
+Go to Profile Settings
+Goverment Job
+Government Employee
+Health Services
+Here is a summary of your donation activity. Thank you for your support!
+High School Teacher
+Hindi
+Home
+House Wife
+House, Road, Village, Post, Thana, District
+Housewife
+Houston, we have a problem! Something went wrong on our end.
+I declare that I will strive to do well for all Sanatani with SDF. I will always support & adhere to the SDF constitution. I will pay my monthly membership fee by the due date (Monthly fee for each member is at least 100 TK; for students & unemployed individuals, it is 50 TK).
+ID Number
+ID Type
+IP
+Identification & Contact
+If Yes, Post & Politics
+If the problem persists, please
+If you believe this is an error, please
+If you turn this off, new user in this system cannot register
+Image
+Img
+Inactive
+Inactive Members
+Info
+Instruction
+Internal Server Error
+JPG, GIF or PNG. Max size of 2MB
+Joined At
+Joined via
+Joining Media
+Journalists
+KYC(Know your customer)
+Keywords copied to clipboard
+Label
+Language
+Language changed successfully
+Language saved successfully
+Languages
+Last Collection Amount
+Last Donate
+Last Donation Amount
+Last Login
+Last Modifed At
+Last Name
+Last Updated
+Lawyer
+Leave blank to keep current password.
+Leave the password fields blank if you do not want to change your password.
+Lecturer
+Login
+Login As
+Login Here
+Login Now
+Login Time
+Login/Register
+Logo
+Logout
+Maintenance Mode
+Make a new contribution and support our cause.
+Male
+Manage Website Sections
+Manual Donation
+Manual Donation Form
+Manual Gateways
+Manual Submission
+Manual Submissions
+Manual donation create
+Marital Status
+Mark all as read
+Married
+Maximum Collection Amount
+Maximum Donation Amount
+Media Manager
+Media file uploader
+Member Categories
+Member Category
+Member Deleted Successfully
+Member List by Area
+Member Login
+Member Saved Successfully
+Member category deleted successfully
+Members
+Members Count
+Message
+Meta
+Meta Description
+Meta Keywords
+Meta Title
+Military
+Mobile Banking Balance
+Mobile Unverified Members
+Monthly Fee
+Mother Name
+Mother's Name
+Mother\'s Name
+My Donations
+My Profile
+N/A
+N/a
+NGO Job
+NID
+NID Back
+NID Back Image
+NID Front
+NID Front Image
+Name
+Net Balance
+Net Donation
+New Call
+New Donation
+New Member
+New Members
+New Password
+New donation received
+New user registered
+News Feed
+Next Call Date
+No
+No Donation Records Found
+No Members Found
+No blog posts found.
+No call logs
+No committee found.
+No data available
+No data found.
+No donation categories found.
+No donation records found.
+No donations found.
+No gallery categories found.
+No gallery items found.
+No information available for this section.
+No languages found.
+No media files uploaded yet.
+No notifications found.
+No payment gateways found.
+No projects found.
+No roles found.
+No sections found.
+No sections match your search criteria.
+No user found with this phone number
+Not Approved
+Note
+Notice deleted successfully.
+Notice saved successfully.
+Notices
+Notification deleted successfully
+Notification saved successfully
+Notification settings updated successfully.
+Notifications
+Notifications Settings
+Notifications deleted successfully
+Notifications marked as read
+Number
+Number of Donations
+Number of members is
+OS
+OTP Code
+OTP Sent At
+OTP Verification
+Occupation
+Old Password
+Old password does not match
+Oops! The page you\'re looking for seems to have taken a detour.
+Optional note
+Or Enter a Custom Amount
+Other
+Others
+Our technical team has been automatically notified. Please try again in a little while.
+PDF
+Page Content
+Page Layout
+Page List
+Page Not Found
+Page Title
+Page deleted successfully
+Page updated successfully
+Pages
+Paid At
+Passport
+Password
+Password Confirmation
+Password Forget
+Password reset successfully.
+Password updated successfully
+Payment Cancelled
+Payment Confirmation
+Payment Gateways
+Payment Method
+Payment Via
+Payment deleted sucessfully
+Payment failed at the gateway. Please try again.
+Payment gateway saved successfully.
+Payment not found
+Payment successful
+Payment was cancelled.
+Payments
+Pending
+Pending Donations
+Permanent Address
+Personal Details
+Pharmaceutical Job
+Phone
+Phone Number
+Phone Number Verification Required
+Phone Off
+Phone number cannot be changed.
+Please check back later, or if you have an urgent inquiry, feel free to contact our support team.
+Please complete your profile
+Please complete your profile by submitting this form.
+Please confirm your password
+Please donate at least 20 tk
+Please download the sample file by 
+Please enter a new password
+Please enter a password
+Please enter the OTP sent to your phone number
+Please enter the donate amount
+Please enter the form to reset your password
+Please enter your email address
+Please enter your first name
+Please enter your last name
+Please enter your password
+Please enter your phone number
+Please enter your phone number without +88
+Please enter your username
+Please make your first call by cliking the New Call button above
+Please re-enter the password
+Please select your preferred gateway to complete the donation.
+Please type your test message
+Please wait for admin approval
+Plese enter the donator name
+Plese enter the phone number
+Police
+Political Relation
+Politician
+Post & Politics
+Post Body
+Post Image
+Post Office
+Post created successfully.
+Post updated successfully.
+Posted at
+Preference
+Present Address
+Present Country
+Primary School Teacher
+Privacy
+Private Service
+Privet Job
+Professional & Marital Status
+Professor
+Profile
+Profile Complete
+Profile Completed
+Profile Image
+Profile Picture
+Profile Setting
+Profile completed successfully.
+Profile image
+Profile updated successfully
+Profile updated successfully.
+Project Image
+Projects
+Published
+Published Blog Posts
+Quick Select Amount
+Real-time data synchronization
+Recomended filze size: is 
+Reference
+Reference Person/Phone
+Reference Person/Phone Number
+Reference person or phone
+Refunded
+Register
+Register Here
+Registration Temporarily Unavailable
+Rejected
+Rejected Donations
+Remember Me
+Remember me
+Remember the password
+Remove
+Reports
+Required
+Resend OTP
+Resend Verification Email
+Reset
+Reset Password
+Retirement
+Role
+Role Deleted Successfully
+Role Name
+Role Saved Successfully
+Roles
+SDF Taken Loan
+SEO Settings
+SMS Provider Configuration
+SMS successfully sent.
+Save
+Save & Exit
+Save Changes
+Save User
+Search...
+Section Key
+Section List
+Sections
+See More
+Select
+Select A Currency
+Select A Timezone
+Select Blood Group
+Select Call Status
+Select District
+Select Division
+Select Fund
+Select Gallery Category
+Select Gender
+Select ID Type
+Select Occupation
+Select Option
+Select Payment Gateway
+Select Status
+Select Union/Pouroshova
+Select Upazila/City
+Select Ward
+Select date
+Select your preference
+Self Business
+Send
+Send OTP
+Send SMS
+Send Test Email
+Send Test Mail
+Send Test SMS
+Separated
+Serial No.
+Server Error
+Server Information
+Set New Password
+Settings
+Settings & Configurations
+Settings saved successfully
+Short Description
+Sign In
+Sign Out
+Sign Up
+Single
+Social Media Image
+Social worker
+Sorry, you cannot modify Super Admin role name or title
+Status
+Status updated.
+Student
+Subject
+Submit
+Submit Donation
+Submit Profile
+Success
+System Configuration
+Tailor
+Teacher
+Telecommunication Job
+Temple List
+Text
+Thana / Post Office
+Thank you for your generous donation. Your contribution has been received successfully. Please wait for admin approval for your donation.
+Thank you for your generous donation. Your contribution has been received successfully. You'll receive a confirmation SMS or Email shortly.
+Thanks for signing up! Please verify your email address by clicking the link we sent to your inbox.
+Thanks for signing up! Please verify your phone number by entering the OTP we sent to your mobile.
+There are no members matching your current filter criteria.
+There is no data to display at the moment.
+This Month
+This Week
+This Year
+This should be a unique system name like super-admin, editor, etc.
+This title will be shown in the UI
+Time
+Time of Donation
+Title
+Today
+Toggle this for new user with KYC is reuqired or not
+Top 20 Donors Report(SDF)
+Total
+Total Admins
+Total Blog Posts
+Total CO Charge
+Total Call Logs
+Total Collected Times
+Total Collection Amount
+Total Donation
+Total Donation Amount
+Total Donation Categories
+Total Donation Count
+Total Donations
+Total Donors
+Total Expense
+Total Expense Category/Group
+Total Field Collected Donations
+Total Galleries
+Total Images
+Total Members
+Total Number Of Collection
+Total Number Of Collections
+Total Number Of Donations
+Total Page Views
+Total Payments
+Total Projects
+Transactino No
+Transaction Details
+Transaction ID
+Transaction ID / Reference
+Transaction No
+Transaction field is required
+Try Again
+Type
+Un Approved Expenses
+Unable to start the payment. Please try again in a moment.
+Unapprove
+Unapproved Expenses
+Unemployed
+Unfortunately, the payment for your donation was declined by the gateway. No amount has been deducted for a failed transaction. Please try again.
+Union
+Union/Pouroshova
+Unique Site Visitor Count
+Unknown
+Unpublished
+Unverified
+Upazila
+Upazila/City Corporation
+Upazilla
+Update Profile
+Update Your Profile
+Update your personal information and preferences.
+Upload
+Upload CSV
+Upload File
+Upload The File
+User
+User Dashboard
+User ID Locked, please contact with admin
+User ID is locked. Please contact the admin.
+User Registration
+User activated successfully.
+User blocked successfully.
+User created successfully
+User deactivated successfully.
+User deleted successfully
+User updated successfully
+Username
+Username cannot be changed.
+Users By Area
+Verified
+Verify & Login
+Verify & Proceed
+Verify OTP
+Verify Phone Number
+Videos
+View
+View All Projects
+View Donation History
+View Profile
+View your past donations and transaction records
+View your past donations and transaction records.
+Visible From
+Visible To
+Ward
+Ward No
+We are currently not accepting new registrations. This may be due to scheduled maintenance or system updates to enhance your experience.
+Website
+Welcome to Your Dashboard
+Whatsapp
+Whatsapp Number
+When you make a donation, it will appear here.
+Widowed
+Workflow
+Write your message here...
+Yes
+You are logged in
+You are logged out
+You can enable google re-captcha on various forms throughout the system
+You cancelled the payment before it was completed. No amount has been deducted. You can restart your donation any time.
+You cannot delete the default page
+You cannot delete this role
+You cannot remove this item
+You have no access
+Your Collections
+Your Donation Submission is pending!
+Your Donation Was Successfully Completed!
+Your Donations
+Your Name
+Your Payment Could Not Be Completed
+Your Phone Number
+Your account is not active, please wait for admin approval
+Your account is pending
+Your message has been submitted.
+Your phone number(01XXXXXXXX)
+Your profile already completed
+Zip Code
+at
+auth.failed
+bKash Trx
+clicking here
+contact support
+e.g. 01600000000
+e.g., 2500
+times
+কোন কাজে সহায়তা করতে চান, তা সিলেক্ট করুন

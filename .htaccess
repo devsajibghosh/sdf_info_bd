@@ -1,0 +1,33 @@
+<IfModule mod_php.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 12M
+    php_value memory_limit 128M
+    php_value max_execution_time 60
+</IfModule>
+
+
+<IfModule mod_rewrite.c>
+    Options -Indexes
+    Options +FollowSymLinks
+    RewriteEngine On
+    
+    <IfModule mod_headers.c>
+        <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js)$">
+            Header set Access-Control-Allow-Origin "*"
+        </FilesMatch>
+    </IfModule>
+
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    RewriteRule ^(.*)$ /public/$1
+
+    # Final rewrite rule for index
+    RewriteRule ^(/)?$ public/index.php [L]
+</IfModule>
+
+<Files 403.shtml>
+order allow,deny
+allow from all
+</Files>
