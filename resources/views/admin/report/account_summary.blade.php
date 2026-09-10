@@ -46,9 +46,33 @@
 
                     <tr class="divider-row"><td colspan="2"></td></tr>
 
+                    {{-- SSLCommerz Gross / Fee / Net breakdown, derived from the actual
+                         card_brand SSLCommerz returned per transaction: MFS (bKash/Nagad/
+                         Rocket/etc.) @ 2.5%, Card (VISA/MASTER/AMEX) @ 3.5%. --}}
+                    <tr class="gateway-row">
+                        <td><span class="dot"></span>@lang('SSLCommerz Gross Donation')</td>
+                        <td class="fw-bold text-end">{{ number_format($sslCommerzGross, 2) }}</td>
+                    </tr>
+                    <tr class="expense-text">
+                        <td>@lang('SSLCommerz Fee')<br><small class="text-muted">@lang('MFS 2.5%'): {{ number_format($sslMfsFee, 2) }} + @lang('Card 3.5%'): {{ number_format($sslCardFee, 2) }}</small></td>
+                        <td class="text-danger text-end">- {{ number_format($sslCommerzFee, 2) }}</td>
+                    </tr>
+                    <tr class="gateway-row">
+                        <td><span class="dot"></span>@lang('SSLCommerz Net Donation')</td>
+                        <td class="fw-bold text-end">{{ number_format($sslCommerzNet, 2) }}</td>
+                    </tr>
+                    @if($sslUnknownGross > 0)
+                        <tr class="gateway-row">
+                            <td><span class="dot"></span>@lang('SSLCommerz Unclassified Channel (fee not calculated)')</td>
+                            <td class="text-end">{{ number_format($sslUnknownGross, 2) }}</td>
+                        </tr>
+                    @endif
+
+                    <tr class="divider-row"><td colspan="2"></td></tr>
+
                     {{-- Deductions Section --}}
                     <tr class="expense-text bg-warning">
-                        <td>@lang('Total CO Charge')</td>
+                        <td>@lang('Total CO Charge')<br><small class="text-muted">(@lang('includes SSLCommerz fee'))</small></td>
                         <td class="text-danger text-end">- {{ number_format($totalCoCharge, 2) }}</td>
                     </tr>
                     

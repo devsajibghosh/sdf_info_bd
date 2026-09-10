@@ -72,7 +72,7 @@
                     
                     </td>
                     <td>{{ $donation?->payment?->transaction_no ?? '-' }}</td>
-                    <td>{{ $donation?->payment?->paymentGateway?->name ?? '-' }}</td>
+                    <td>{{ $donation?->payment?->display_channel ?? '-' }}</td>
                     <td>{{ System::amountWithCurrency($donation->amount) }}</td>
                     <td>{{ $donation->category->name }}</td>
 <td>

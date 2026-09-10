@@ -46,7 +46,7 @@
                         </option>
                     @endforeach
                 </select>
-                @error('donation_category_id')
+                @error('donation_category_id', 'donation')
                     <p class="mt-1.5 text-sm text-red-600" role="alert">{{ $message }}</p>
                 @enderror
                 <p class="mt-1.5 text-sm text-red-600 hidden" id="categoryError" role="alert"></p>
@@ -70,7 +70,7 @@
                     aria-describedby="contactError"
                     class="w-full rounded-lg border border-slate-300 px-3.5 py-3 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                 >
-                @error('contact')
+                @error('contact', 'donation')
                     <p class="mt-1.5 text-sm text-red-600" role="alert">{{ $message }}</p>
                 @enderror
                 <p class="mt-1.5 text-sm text-red-600 hidden" id="contactError" role="alert"></p>
@@ -90,7 +90,7 @@
                         inputmode="numeric"
                         min="20"
                         step="1"
-                        placeholder="500"
+                        placeholder="{{ __('Enter amount') }}"
                         value="{{ old('amount') }}"
                         required
                         aria-describedby="amountError"
@@ -106,7 +106,7 @@
                         >৳{{ number_format($quickAmount) }}</button>
                     @endforeach
                 </div>
-                @error('amount')
+                @error('amount', 'donation')
                     <p class="mt-1.5 text-sm text-red-600" role="alert">{{ $message }}</p>
                 @enderror
                 <p class="mt-1.5 text-sm text-red-600 hidden" id="amountError" role="alert"></p>
@@ -123,9 +123,15 @@
                             </label>
                         @endforeach
                     </div>
+                    @error('payment_gateway_id', 'donation')
+                        <p class="mt-1.5 text-sm text-red-600" role="alert">{{ $message }}</p>
+                    @enderror
                 </div>
             @elseif ($paymentGateways->count() === 1)
                 <input type="hidden" name="payment_gateway_id" value="{{ $paymentGateways->first()->id }}">
+                @error('payment_gateway_id', 'donation')
+                    <p class="mt-1.5 text-sm text-red-600" role="alert">{{ $message }}</p>
+                @enderror
             @else
                 <div class="rounded-lg border border-red-300 bg-red-50 text-red-700 text-sm px-4 py-3" role="alert">
                     {{ __('Unable to start the payment. Please try again in a moment.') }}
@@ -149,6 +155,32 @@
                         <dd class="font-extrabold text-emerald-700 text-base text-right" id="summaryAmount">৳0 {{ $currency }}</dd>
                     </div>
                 </dl>
+            </div>
+
+            {{-- Mandatory policy acknowledgement (SSLCommerz compliance requirement) --}}
+            <div>
+                <label for="agree_terms" class="flex items-start gap-2.5 text-sm text-slate-600 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        id="agree_terms"
+                        name="agree_terms"
+                        value="1"
+                        required
+                        aria-describedby="agreeTermsError"
+                        class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                    >
+                    <span>
+                        আমি
+                        <a href="{{ route('site.page', 'terms-and-conditions') }}" target="_blank" rel="noopener" class="text-emerald-700 font-semibold underline hover:text-emerald-800">Terms &amp; Conditions</a>,
+                        <a href="{{ route('site.page', 'privacy-policy') }}" target="_blank" rel="noopener" class="text-emerald-700 font-semibold underline hover:text-emerald-800">Privacy Policy</a> এবং
+                        <a href="{{ route('site.page', 'return-and-refund-policy') }}" target="_blank" rel="noopener" class="text-emerald-700 font-semibold underline hover:text-emerald-800">Refund &amp; Return Policy</a>
+                        মেনে নিচ্ছি।
+                    </span>
+                </label>
+                @error('agree_terms', 'donation')
+                    <p class="mt-1.5 text-sm text-red-600" role="alert">{{ $message }}</p>
+                @enderror
+                <p class="mt-1.5 text-sm text-red-600 hidden" id="agreeTermsError" role="alert"></p>
             </div>
 
             <button
@@ -180,11 +212,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const categorySelect = document.getElementById('donation_category_id');
     const contactInput = document.getElementById('contact');
     const amountInput = document.getElementById('donation_amount');
+    const agreeTermsInput = document.getElementById('agree_terms');
     const submitBtn = document.getElementById('donateSubmitBtn');
 
     const categoryError = document.getElementById('categoryError');
     const contactError = document.getElementById('contactError');
     const amountError = document.getElementById('amountError');
+    const agreeTermsError = document.getElementById('agreeTermsError');
 
     const summaryCategory = document.getElementById('summaryCategory');
     const summaryContact = document.getElementById('summaryContact');
@@ -194,6 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const CURRENCY = @json($currency);
     const MSG_PHONE = @json(__('Please enter a valid 11-digit mobile number.'));
     const MSG_AMOUNT = @json(__('Minimum donation amount is 20 BDT.'));
+    const MSG_AGREE_TERMS = @json(__('Please accept the Terms & Conditions, Privacy Policy, and Refund & Return Policy before proceeding with payment.'));
     const MSG_PREPARING = @json(__('Preparing payment...'));
     const submitBtnDefaultText = submitBtn ? submitBtn.textContent.trim() : '';
 
@@ -256,6 +291,14 @@ document.addEventListener('DOMContentLoaded', function () {
             valid = false;
         } else {
             amountError.classList.add('hidden');
+        }
+
+        if (agreeTermsInput && !agreeTermsInput.checked) {
+            agreeTermsError.textContent = MSG_AGREE_TERMS;
+            agreeTermsError.classList.remove('hidden');
+            valid = false;
+        } else if (agreeTermsError) {
+            agreeTermsError.classList.add('hidden');
         }
 
         return valid;

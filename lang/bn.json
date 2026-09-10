@@ -547,8 +547,10 @@
     "Please check back later, or if you have an urgent inquiry, feel free to contact our support team.": "অনুগ্রহ করে পরে আবার চেক করুন, অথবা যদি আপনার কোন জরুরী তদন্ত থাকে, তাহলে নির্দ্বিধায় আমাদের সহায়তা দলের সাথে যোগাযোগ করুন।",
     "Please complete your profile": "আপনার প্রোফাইল সম্পূর্ণ করুন",
     "Please complete your profile by submitting this form.": "এই ফর্ম জমা দিয়ে আপনার প্রোফাইল সম্পূর্ণ করুন.",
+    "Please accept the Terms & Conditions, Privacy Policy, and Refund & Return Policy before proceeding with payment.": "পেমেন্ট করার আগে Terms & Conditions, Privacy Policy এবং Refund & Return Policy গ্রহণ করুন।",
     "Please confirm your password": "আপনার পাসওয়ার্ড নিশ্চিত করুন",
     "Please donate at least 20 tk": "অনুগ্রহ করে অন্তত ২০ টাকা দান করুন",
+    "Enter amount": "পরিমাণ লিখুন",
     "Please download the sample file by": "দ্বারা নমুনা ফাইল ডাউনলোড করুন",
     "Please download the sample file by ": "অনুগ্রহ করে নমুনা ফাইলটি ডাউনলোড করুন ",
     "Please enter a new password": "একটি নতুন পাসওয়ার্ড লিখুন",
@@ -870,5 +872,6 @@
     "SEO title, meta description, Open Graph tags and the social share image are generated automatically from the title, content and featured image above — no separate SEO setup is needed.": "SEO শিরোনাম, মেটা বিবরণ, ওপেন গ্রাফ ট্যাগ এবং সোশ্যাল শেয়ার ছবি উপরের শিরোনাম, কনটেন্ট এবং ফিচার্ড ইমেজ থেকে স্বয়ংক্রিয়ভাবে তৈরি হয় — আলাদা SEO সেটআপের প্রয়োজন নেই।",
     "The uploaded file is too large for the server to accept. Please upload a smaller file and try again.": "আপলোড করা ফাইলটি সার্ভারের গ্রহণযোগ্য সীমার চেয়ে বড়। অনুগ্রহ করে একটি ছোট ফাইল আপলোড করে আবার চেষ্টা করুন।",
     "An unknown error occurred.": "একটি অজানা সমস্যা হয়েছে।",
-    "The server rejected this request because the uploaded file is too large.": "আপলোড করা ফাইলটি অনেক বড় হওয়ায় সার্ভার এই অনুরোধটি গ্রহণ করেনি।"
+    "The server rejected this request because the uploaded file is too large.": "আপলোড করা ফাইলটি অনেক বড় হওয়ায় সার্ভার এই অনুরোধটি গ্রহণ করেনি।",
+    "The selected donation category is not available. Please choose another one.": "নির্বাচিত তহবিলটি বর্তমানে উপলব্ধ নয়। অনুগ্রহ করে অন্য একটি তহবিল নির্বাচন করুন।"
 }

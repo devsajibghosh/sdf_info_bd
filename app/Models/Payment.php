@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\SslCommerzChannel;
 use App\Traits\Modeling;
 use Illuminate\Database\Eloquent\Model;
 
@@ -61,5 +62,25 @@ class Payment extends Model
     public function donation()
     {
         return $this->hasOne(Donation::class);
+    }
+
+    /**
+     * Payment channel for display, e.g. "SSLCommerz — bKash", "SSLCommerz —
+     * VISA". For every gateway other than SSLCommerz this is unchanged
+     * from the existing gateway name. The SSLCommerz-specific part is
+     * derived from the validation data SSLCommerz already returned for
+     * this transaction (payments.meta->sslcz_validation) — no new column.
+     */
+    public function getDisplayChannelAttribute(): string
+    {
+        $gatewayName = $this->paymentGateway?->name ?? '-';
+
+        if ($this->paymentGateway?->key !== 'sslcommerz') {
+            return $gatewayName;
+        }
+
+        $validation = is_array($this->meta) ? ($this->meta['sslcz_validation'] ?? null) : null;
+
+        return $gatewayName . ' — ' . SslCommerzChannel::label($validation);
     }
 }

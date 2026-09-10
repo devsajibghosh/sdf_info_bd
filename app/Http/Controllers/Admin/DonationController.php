@@ -441,12 +441,12 @@ public function list()
     } else {
         // সাধারণ সার্চ লজিক
         $donations = Donation::searching([
-            'category:name', 
-            'email', 
-            'phone_number', 
-            'user:name', 
-            'user:email', 
-            'user:phone_number', 
+            'category:name',
+            'email',
+            'phone_number',
+            'user:name',
+            'user:email',
+            'user:phone_number',
             'payment:transaction_no'
         ]);
     }
@@ -457,7 +457,7 @@ public function list()
     // round-trip), so every cancelled/failed checkout otherwise shows up here
     // as noise. Those rows are kept (not deleted) for support/audit purposes —
     // they remain visible under the existing "Rejected Donations" filter.
-    $donations = $donations->where('status', '!=', 2)->latest()->paginate();
+    $donations = $donations->with('payment.paymentGateway')->where('status', '!=', 2)->latest()->paginate();
 
     return view('admin.donation.list', compact('title', 'donations'));
 }
@@ -470,7 +470,7 @@ public function list()
 
         $title = __('Approved Donations');
 
-        $donations = Donation::searching(['category:name', 'email', 'phone_number', 'user:name', 'user:email', 'user:phone_number', 'payment:transaction_no'])->success()->latest()->paginate();
+        $donations = Donation::searching(['category:name', 'email', 'phone_number', 'user:name', 'user:email', 'user:phone_number', 'payment:transaction_no'])->with('payment.paymentGateway')->success()->latest()->paginate();
 
         return view('admin.donation.list', compact('title', 'donations'));
     }
@@ -484,7 +484,7 @@ public function list()
 
         $title = __('Rejected Donations');
 
-        $donations = Donation::searching(['category:name', 'email', 'phone_number', 'user:name', 'user:email', 'user:phone_number', 'payment:transaction_no'])->rejected()->latest()->paginate();
+        $donations = Donation::searching(['category:name', 'email', 'phone_number', 'user:name', 'user:email', 'user:phone_number', 'payment:transaction_no'])->with('payment.paymentGateway')->rejected()->latest()->paginate();
 
         return view('admin.donation.list', compact('title', 'donations'));
     }
@@ -496,7 +496,7 @@ public function list()
 
         $title = __('Pending Donations');
 
-        $donations = Donation::searching(['category:name', 'email', 'phone_number', 'user:name', 'user:email', 'user:phone_number', 'payment:transaction_no'])->pending()->latest()->paginate();
+        $donations = Donation::searching(['category:name', 'email', 'phone_number', 'user:name', 'user:email', 'user:phone_number', 'payment:transaction_no'])->with('payment.paymentGateway')->pending()->latest()->paginate();
 
         return view('admin.donation.list', compact('title', 'donations'));
     }

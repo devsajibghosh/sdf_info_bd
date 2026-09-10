@@ -12,6 +12,7 @@ use App\Models\Expense;
 use App\Models\ManualSubmission;
 use App\Models\User;
 use App\Models\Payment;
+use App\Services\SslCommerzChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -86,8 +87,38 @@ $gatewaySums = Payment::join('payment_gateways', 'payments.payment_gateway_id', 
         
         $totalDonation = $totalDonation1 + $cashDonation;
 
-        
-        $totalCoCharge = ($totalMBDonation / 100 * 1.5);
+        // SSLCommerz payment-channel fee breakdown (bKash/Nagad/Rocket/etc. via
+        // SSLCommerz = MFS @ 2.5%; VISA/MASTER/AMEX = Card @ 3.5%), derived
+        // from the card_brand SSLCommerz already returned per transaction
+        // (payments.meta->sslcz_validation) — grouped in SQL so the whole
+        // donations/payments table is never pulled into PHP just for this.
+        // Only successfully validated SSLCommerz payments are included; a
+        // channel that can't be classified (missing/older validation data,
+        // e.g. Internet Banking which SDF hasn't assigned a rate to) is kept
+        // in the gross total but excluded from the fee calculation rather
+        // than guessed.
+        $sslGroupSums = Payment::query()
+            ->join('payment_gateways', 'payments.payment_gateway_id', '=', 'payment_gateways.id')
+            ->where('payments.status', 'success')
+            ->where('payment_gateways.key', 'sslcommerz')
+            ->select(
+                DB::raw(SslCommerzChannel::feeGroupSqlExpression() . ' as fee_group'),
+                DB::raw('SUM(payments.amount) as gross')
+            )
+            ->groupBy('fee_group')
+            ->pluck('gross', 'fee_group');
+
+        $sslMfsGross = (float) ($sslGroupSums[SslCommerzChannel::GROUP_MFS] ?? 0);
+        $sslCardGross = (float) ($sslGroupSums[SslCommerzChannel::GROUP_CARD] ?? 0);
+        $sslUnknownGross = (float) ($sslGroupSums['unknown'] ?? 0);
+
+        $sslMfsFee = round($sslMfsGross * SslCommerzChannel::MFS_FEE_RATE, 2);
+        $sslCardFee = round($sslCardGross * SslCommerzChannel::CARD_FEE_RATE, 2);
+        $sslCommerzFee = round($sslMfsFee + $sslCardFee, 2);
+        $sslCommerzGross = round($sslMfsGross + $sslCardGross + $sslUnknownGross, 2);
+        $sslCommerzNet = round($sslCommerzGross - $sslCommerzFee, 2);
+
+        $totalCoCharge = round(($totalMBDonation / 100 * 1.5) + $sslCommerzFee, 2);
 
 
         $netDonation = $totalDonation - $totalCoCharge;
@@ -101,7 +132,7 @@ $gatewaySums = Payment::join('payment_gateways', 'payments.payment_gateway_id', 
         return view('admin.report.account_summary', compact(
             'title',
             'finalB',
-            'gatewaySums', 
+            'gatewaySums',
             'totalDonation',
             'totalCoCharge',
             'netDonation',
@@ -109,7 +140,15 @@ $gatewaySums = Payment::join('payment_gateways', 'payments.payment_gateway_id', 
             'sdfTakenLoan',
             'cashDonation',
             'netBalance',
-            'bankBalance', 
+            'bankBalance',
+            'sslMfsGross',
+            'sslCardGross',
+            'sslUnknownGross',
+            'sslMfsFee',
+            'sslCardFee',
+            'sslCommerzFee',
+            'sslCommerzGross',
+            'sslCommerzNet',
         ));
     }
     

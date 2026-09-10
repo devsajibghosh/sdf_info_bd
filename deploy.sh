@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Clear local caches first so no machine-specific paths leak into the export
+# (bootstrap/cache/config.php etc.) — see predeploy-clean.sh
+php artisan optimize:clear
+
 # Output folder
 OUTPUT_DIR="deploy"
 

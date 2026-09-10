@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class SiteController extends Controller
 {
@@ -158,18 +160,37 @@ class SiteController extends Controller
     {
         $request->merge(['contact' => trim((string) $request->input('contact'))]);
 
-        $request->validate([
+        // Named "donation" error bag: this endpoint is submitted from more than one
+        // page (the homepage quick-donate widget and the dedicated /donate page).
+        // Keeping its errors in their own bag stops them from also being picked up
+        // by the site-wide global alert partial (admin.partials.alerts loops over
+        // the *default* error bag only) — validation errors must only ever appear
+        // inline, next to the field/checkbox on whichever form was submitted.
+        $validator = Validator::make($request->all(), [
             'amount'               => 'required|numeric|gte:20',
-            'donation_category_id' => 'required|exists:donation_categories,id',
-            'payment_gateway_id'   => 'required|exists:payment_gateways,id',
+            // Row must exist AND still be active — a stale/tampered category id
+            // (e.g. one the admin has since disabled) must not silently succeed.
+            'donation_category_id' => ['required', Rule::exists('donation_categories', 'id')->where('status', 1)],
+            // Row must exist AND be an active, automatic gateway — matches the
+            // constraint enforced again below before the gateway is charged, so a
+            // manipulated request fails here with a clean validation message
+            // instead of a raw 404 from findOrFail().
+            'payment_gateway_id'   => ['required', Rule::exists('payment_gateways', 'id')->where('status', 1)->where('manual', 0)],
             'contact'              => ['required', 'string', 'regex:/^01[0-9]{9}$/'],
+            'agree_terms'          => 'accepted',
         ], [
             'amount.required' => __('Minimum donation amount is 20 BDT.'),
             'amount.numeric'  => __('Minimum donation amount is 20 BDT.'),
             'amount.gte'      => __('Minimum donation amount is 20 BDT.'),
+            'donation_category_id.required' => __('This field is required.'),
+            'donation_category_id.exists'   => __('The selected donation category is not available. Please choose another one.'),
+            'payment_gateway_id.exists'     => __('Unable to start the payment. Please try again in a moment.'),
             'contact.required' => __('Please enter a valid 11-digit mobile number.'),
             'contact.regex'    => __('Please enter a valid 11-digit mobile number.'),
+            'agree_terms.accepted' => __('Please accept the Terms & Conditions, Privacy Policy, and Refund & Return Policy before proceeding with payment.'),
         ]);
+
+        $validator->validateWithBag('donation');
 
         $contact = $request->contact;
 
