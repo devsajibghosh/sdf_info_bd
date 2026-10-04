@@ -4,34 +4,46 @@ namespace App\Services;
 
 use App\Helpers\BulkSmsHelper;
 use App\Models\Donor;
+use App\Models\SmsTemplate;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Single source of truth for the "donation received" SMS: the payment-success
- * gateway flow (GatewayHelper::addBalanceToUser) and the manual/admin
- * approval flow (DonationController::processFinalApproval) both call this
- * instead of each formatting their own message, so the wording and donor-name
- * resolution can never drift apart between the two paths again.
+ * Single sender for the "donation received" SMS: the payment-success gateway
+ * flow (GatewayHelper), manual donation entry and pending-donation approval
+ * (DonationController) all call this. The wording comes from the admin-
+ * editable SmsTemplate for $templateKey (Settings > SMS Settings), and the
+ * SMS is skipped when that template or the master SMS switch is off.
  */
 class DonationSmsService
 {
-    public function sendSuccessSms(?string $phone, float $amount, $recipient, int $contextId = 0): void
+    public function sendSuccessSms(?string $phone, float $amount, $recipient, int $contextId = 0, string $templateKey = 'donation_approved', ?string $trx = null): void
     {
         if (!$phone) {
             return;
         }
 
-        $name = $this->resolveDonorName($recipient, $phone);
+        $message = SmsTemplate::render($templateKey, [
+            'name'   => $this->resolveDonorName($recipient, $phone),
+            'amount' => number_format($amount, 2),
+            'trx'    => $trx ?? '',
+            'date'   => now()->format('d M Y'),
+        ]);
 
-        $message = sprintf(
-            'Dear %s, Your donation %s BDT has been successfully received by SDF gratefully. Download the payment slip by logging into www.sdf.info.bd/login',
-            $name,
-            number_format($amount, 2)
-        );
+        if (!$message) {
+            return;
+        }
 
         try {
-            (new BulkSmsHelper())->send($phone, $message);
+            $result = (new BulkSmsHelper())->send($phone, $message);
+
+            if (empty($result['success'])) {
+                Log::error('Donation success SMS rejected by gateway.', [
+                    'donation_id' => $contextId,
+                    'status' => $result['status'] ?? null,
+                    'body' => $result['body'] ?? null,
+                ]);
+            }
         } catch (\Throwable $e) {
             // SMS delivery is best-effort and must never break the payment/approval flow.
             Log::error('Donation success SMS failed to send.', [

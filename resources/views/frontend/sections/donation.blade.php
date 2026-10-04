@@ -130,7 +130,7 @@
                         {{-- Mandatory policy acknowledgement (SSLCommerz compliance requirement) --}}
                         <div class="form-check mt-3">
                             <input
-                                class="form-check-input"
+                                class="form-check-input terms-checkbox"
                                 type="checkbox"
                                 id="home_agree_terms"
                                 name="agree_terms"
@@ -281,10 +281,7 @@
 
     /* Mandatory terms checkbox: comfortably tappable on mobile, links wrap cleanly */
     #home_agree_terms {
-        width: 1.15em;
-        height: 1.15em;
-        margin-top: 0.2em;
-        cursor: pointer;
+        margin-top: 0.15em;
     }
 
     .form-check-label[for="home_agree_terms"] {
@@ -317,6 +314,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const contactError = document.getElementById('homeContactError');
     const amountError = document.getElementById('homeAmountError');
     const agreeTermsError = document.getElementById('homeAgreeTermsError');
+    // Ticking the box clears the red "please accept" state immediately.
+    agreeTermsInput?.addEventListener('change', function () {
+        if (agreeTermsInput.checked) {
+            agreeTermsInput.classList.remove('is-invalid');
+            hideError(agreeTermsError);
+        }
+    });
 
     const PHONE_REGEX = /^01[0-9]{9}$/;
     const MSG_REQUIRED = @json(__('This field is required.'));
@@ -373,9 +377,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (agreeTermsInput && !agreeTermsInput.checked) {
             showError(agreeTermsError, MSG_AGREE_TERMS);
+            agreeTermsInput.classList.add('is-invalid');
             valid = false;
         } else {
             hideError(agreeTermsError);
+            agreeTermsInput?.classList.remove('is-invalid');
         }
 
         return valid;

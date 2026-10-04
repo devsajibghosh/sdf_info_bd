@@ -4,12 +4,14 @@ namespace App\Http\Controllers\User\Auth;
 
 use App\Facades\System;
 use App\Helpers\BulkSmsHelper;
+use App\Models\SmsTemplate;
 use App\Http\Controllers\Controller;
 use App\Models\AdminNotification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -91,10 +93,14 @@ class RegisterController extends Controller
             $user->save();
 
             // Send SMS
-            (new BulkSmsHelper())->send(
+            $result = (new BulkSmsHelper())->send(
                 $user->phone_number,
-                "Hello {$user->first_name} {$user->last_name}, Your one-time SDF password is: {$code}"
+                (string) SmsTemplate::render('user_register_otp', ['code' => $code, 'name' => trim("{$user->first_name} {$user->last_name}")])
             );
+
+            if (empty($result['success'])) {
+                Log::error('Registration OTP SMS send failed', ['phone' => $user->phone_number, 'status' => $result['status'] ?? null, 'body' => $result['body'] ?? null]);
+            }
         }
 
         // Admin Notification

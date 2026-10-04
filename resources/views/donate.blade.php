@@ -167,7 +167,7 @@
                         value="1"
                         required
                         aria-describedby="agreeTermsError"
-                        class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                        class="terms-checkbox"
                     >
                     <span>
                         আমি
@@ -219,6 +219,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const contactError = document.getElementById('contactError');
     const amountError = document.getElementById('amountError');
     const agreeTermsError = document.getElementById('agreeTermsError');
+    // Ticking the box clears the red "please accept" state immediately.
+    agreeTermsInput?.addEventListener('change', function () {
+        if (agreeTermsInput.checked) {
+            agreeTermsInput.classList.remove('is-invalid');
+            agreeTermsError?.classList.add('hidden');
+        }
+    });
 
     const summaryCategory = document.getElementById('summaryCategory');
     const summaryContact = document.getElementById('summaryContact');
@@ -296,9 +303,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (agreeTermsInput && !agreeTermsInput.checked) {
             agreeTermsError.textContent = MSG_AGREE_TERMS;
             agreeTermsError.classList.remove('hidden');
+            agreeTermsInput.classList.add('is-invalid');
             valid = false;
         } else if (agreeTermsError) {
             agreeTermsError.classList.add('hidden');
+            agreeTermsInput?.classList.remove('is-invalid');
         }
 
         return valid;

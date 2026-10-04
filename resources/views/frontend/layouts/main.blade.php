@@ -108,6 +108,48 @@
 
     <style>
 
+    /* Policy-acceptance checkbox (donate page + home donation form): a clearly
+       coloured box so visitors notice they must tick it — the browser's default
+       grey box was easy to miss. Green border while empty, solid green with a
+       white tick once checked, red after a submit attempt without ticking. */
+    .terms-checkbox {
+        -webkit-appearance: none;
+        appearance: none;
+        flex-shrink: 0;
+        width: 1.25rem;
+        height: 1.25rem;
+        margin: 0.1rem 0 0 0;
+        border: 2px solid #059669;
+        border-radius: 0.3rem;
+        background-color: #ecfdf5;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 0.85rem;
+        cursor: pointer;
+        transition: background-color .15s, border-color .15s, box-shadow .15s;
+    }
+    .terms-checkbox:hover {
+        border-color: #047857;
+        box-shadow: 0 0 0 3px rgba(5, 150, 105, .15);
+    }
+    .terms-checkbox:focus,
+    .terms-checkbox:focus-visible {
+        outline: none;
+        border-color: #059669;
+        box-shadow: 0 0 0 3px rgba(5, 150, 105, .35);
+    }
+    .terms-checkbox:checked,
+    .terms-checkbox.is-invalid:checked {
+        border-color: #059669;
+        background-color: #059669;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M3.5 8.5l3 3 6-7'/%3e%3c/svg%3e");
+    }
+    .terms-checkbox.is-invalid:not(:checked) {
+        border-color: #dc2626;
+        background-color: #fef2f2;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, .15);
+    }
+
     /* Desktop: menu stays left-aligned and inline */
     @media (min-width: 992px) {
         .navbar-collapse {

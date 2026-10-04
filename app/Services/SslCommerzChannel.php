@@ -32,6 +32,9 @@ class SslCommerzChannel
     /** SDF's requested accounting rate for card transactions (VISA/MASTER/AMEX). */
     public const CARD_FEE_RATE = 0.035;
 
+    /** card_brand values SSLCommerz returns for card networks (it sends both MASTER and MASTERCARD). */
+    public const CARD_BRANDS = ['VISA', 'MASTER', 'MASTERCARD', 'AMEX'];
+
     private const MFS_OPERATOR_NAMES = [
         'BKASH' => 'bKash',
         'NAGAD' => 'Nagad',
@@ -58,7 +61,7 @@ class SslCommerzChannel
 
         return match (true) {
             $brand === 'VISA' => 'VISA',
-            $brand === 'MASTER' => 'MasterCard',
+            in_array($brand, ['MASTER', 'MASTERCARD'], true) => 'MasterCard',
             $brand === 'AMEX' => 'AMEX',
             $brand === 'IB' => 'Internet Banking',
             str_contains($brand, 'MOBILE') => self::mfsOperatorLabel($type),
@@ -83,7 +86,7 @@ class SslCommerzChannel
         $brand = strtoupper(trim((string) ($validation['card_brand'] ?? '')));
 
         return match (true) {
-            in_array($brand, ['VISA', 'MASTER', 'AMEX'], true) => self::GROUP_CARD,
+            in_array($brand, self::CARD_BRANDS, true) => self::GROUP_CARD,
             str_contains($brand, 'MOBILE') => self::GROUP_MFS,
             default => null,
         };
@@ -106,10 +109,10 @@ class SslCommerzChannel
      */
     public static function feeGroupSqlExpression(string $metaColumn = 'payments.meta'): string
     {
-        $brand = "UPPER({$metaColumn}->>'$.sslcz_validation.card_brand')";
+        $brand = "UPPER(JSON_UNQUOTE(JSON_EXTRACT({$metaColumn}, '\$.sslcz_validation.card_brand')))";
 
         return "CASE
-            WHEN {$brand} IN ('VISA', 'MASTER', 'AMEX') THEN '" . self::GROUP_CARD . "'
+            WHEN {$brand} IN ('" . implode("', '", self::CARD_BRANDS) . "') THEN '" . self::GROUP_CARD . "'
             WHEN {$brand} LIKE '%MOBILE%' THEN '" . self::GROUP_MFS . "'
             ELSE 'unknown'
         END";

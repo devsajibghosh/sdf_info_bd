@@ -13,6 +13,7 @@ use App\Services\FileManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -28,13 +29,19 @@ class UserController extends Controller
         $contact = Contact::findOrFail($contactId);
 
 
-        (new BulkSmsHelper())->send($contact->phone_number, $request->message);
+        $result = (new BulkSmsHelper())->send($contact->phone_number, $request->message);
 
         SMSLog::create([
             'contact_id' => $contact->id,
             'sms' => $request->message
         ]);
-        
+
+        if (empty($result['success'])) {
+            Log::error('Contact SMS send failed', ['contact_id' => $contact->id, 'status' => $result['status'] ?? null, 'body' => $result['body'] ?? null]);
+
+            return back()->withErrors(__('Failed to send SMS. Please check SMS configuration.'));
+        }
+
         return back()->withSuccess(__('SMS successfully sent.'));
     }
 
@@ -50,13 +57,19 @@ class UserController extends Controller
         $user = User::findOrFail($userId);
 
 
-        (new BulkSmsHelper())->send($user->phone_number, $request->message);
+        $result = (new BulkSmsHelper())->send($user->phone_number, $request->message);
 
         SMSLog::create([
             'user_id' => $userId,
             'sms' => $request->message
         ]);
-        
+
+        if (empty($result['success'])) {
+            Log::error('User SMS send failed', ['user_id' => $userId, 'status' => $result['status'] ?? null, 'body' => $result['body'] ?? null]);
+
+            return back()->withErrors(__('Failed to send SMS. Please check SMS configuration.'));
+        }
+
         return back()->withSuccess(__('SMS successfully sent.'));
     }
 

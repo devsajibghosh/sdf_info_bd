@@ -96,15 +96,19 @@
     const IDLE_DURATION = SESSION_LIFETIME_MINUTES * 60 * 1000;
     const STORAGE_KEY = 'logoutDeadline';
 
-    let logoutDeadline = localStorage.getItem(STORAGE_KEY);
+    // This page load was itself an authenticated request that refreshed the
+    // server session, so the idle deadline always restarts from now. Reusing a
+    // stored deadline left over from a previous session would log a freshly
+    // logged-in admin straight back out (forcing a second login + OTP).
+    let logoutDeadline = Date.now() + IDLE_DURATION;
+    localStorage.setItem(STORAGE_KEY, logoutDeadline);
 
-    // ✅ Only create deadline if it does NOT exist
-    if (!logoutDeadline) {
-        logoutDeadline = Date.now() + IDLE_DURATION;
-        localStorage.setItem(STORAGE_KEY, logoutDeadline);
-    } else {
-        logoutDeadline = parseInt(logoutDeadline);
-    }
+    // Keep tabs in sync: activity in another tab pushes this tab's deadline too.
+    window.addEventListener('storage', function (e) {
+        if (e.key === STORAGE_KEY && e.newValue) {
+            logoutDeadline = parseInt(e.newValue);
+        }
+    });
 
     function updateDisplay() {
         const diff = logoutDeadline - Date.now();

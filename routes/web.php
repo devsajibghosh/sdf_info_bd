@@ -168,7 +168,6 @@ Route::middleware('admin')->group(function () {
     Route::get('/donors/download/max', [App\Http\Controllers\Admin\DonorController::class, 'downloadMaxDonors'])->name('admin.donor.download.max.donor');
 });
 
-Route::post('/chat-send', [SiteController::class, 'sendMessage'])->name('frontend.chat.send');
 
 
 // approved automation route

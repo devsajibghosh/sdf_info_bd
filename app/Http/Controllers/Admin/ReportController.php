@@ -21,86 +21,53 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class ReportController extends Controller
 {
     
-    public function accountSummary() 
+    public function accountSummary()
     {
         goIfUserCan('account-summary');
-        
+
         $title = __('Account Summary');
-      
-      
-$gatewaySums = Payment::join('payment_gateways', 'payments.payment_gateway_id', '=', 'payment_gateways.id')
-    ->where('payments.status', 'success')
-    ->where('payment_gateways.for_admin', 0)
-    ->select(
-        DB::raw("CASE 
-            WHEN payment_gateways.id IN (1, 47, 48) THEN 'bKash' 
-            ELSE payment_gateways.name 
-        END as display_name"),
-        DB::raw('SUM(payments.amount) as total')
-    )
-    ->groupBy('display_name') // This merges 1, 47, 48 into one, others stay separate
-    ->get();
-    
-    
-    
-        $totalDonation1 = $gatewaySums->sum('total'); 
-        
-        
-        
-        $totalMBDonation = Payment::success()
-            ->select('payment_gateway_id', DB::raw('SUM(amount) as total'))
-            ->groupBy('payment_gateway_id')
-            ->with('paymentGateway:id,name') 
-            ->whereHas('paymentGateway', function ($query) {
-                $query->where('for_admin', 0)->where('mobile_banking', 1);
-            })->get()->sum('total');
-            
-        
-     
-        
-        // sdf-taken-loan
-        
-        $totalExpense = \App\Models\Expense::approved()->sum('amount');
-        $sdfTakenLoan = Payment::success()
-            ->select(DB::raw('SUM(amount) as total'))
-            ->groupBy('payment_gateway_id') 
-            ->whereHas('paymentGateway', function ($query) {
-                $query->where('key', 'sdf-taken-loan');
-            })->first()['total'] ?? 0; 
-            
-        $bankBalance = Payment::success()
-            ->select(DB::raw('SUM(amount) as total'))
-            ->groupBy('payment_gateway_id') 
-            ->whereHas('paymentGateway', function ($query) {
-                $query->where('key', 'bank-balance');
-            })->first()['total'] ?? 0; 
-            
 
-    
-        $cashDonation = Payment::success()
-            ->select(DB::raw('SUM(amount) as total'))
-            ->groupBy('payment_gateway_id') 
-            ->whereHas('paymentGateway', function ($query) {
-                $query->where('key', 'cash');
-            })->first()['total'] ?? 0; 
-            
-        
-        $totalDonation = $totalDonation1 + $cashDonation;
+        // Only money that is actually confirmed counts as a donation: the payment
+        // must be 'success' AND its donation must be approved (status = 1).
+        // Pending/rejected donations and raw manual-submission ledger rows (no
+        // donation attached) are excluded. Gateways are matched by key, never by
+        // the for_admin flag, because that flag differs between environments.
+        $approvedDonationSums = Payment::join('payment_gateways', 'payments.payment_gateway_id', '=', 'payment_gateways.id')
+            ->where('payments.status', 'success')
+            ->whereHas('donation', function ($query) {
+                $query->where('status', 1);
+            })
+            ->select('payment_gateways.key', DB::raw('SUM(payments.amount) as total'))
+            ->groupBy('payment_gateways.key')
+            ->pluck('total', 'payment_gateways.key')
+            ->map(fn ($total) => (float) $total);
 
-        // SSLCommerz payment-channel fee breakdown (bKash/Nagad/Rocket/etc. via
-        // SSLCommerz = MFS @ 2.5%; VISA/MASTER/AMEX = Card @ 3.5%), derived
-        // from the card_brand SSLCommerz already returned per transaction
-        // (payments.meta->sslcz_validation) — grouped in SQL so the whole
-        // donations/payments table is never pulled into PHP just for this.
-        // Only successfully validated SSLCommerz payments are included; a
-        // channel that can't be classified (missing/older validation data,
-        // e.g. Internet Banking which SDF hasn't assigned a rate to) is kept
-        // in the gross total but excluded from the fee calculation rather
-        // than guessed.
+        $sumKeys = fn (array $keys) => round(collect($keys)->sum(fn ($key) => $approvedDonationSums[$key] ?? 0), 2);
+
+        // ---- Section 1: manual gateways (SSLCommerz excluded) ----
+        // 'bkash payment' = the old automatic bKash gateways (ids 47/48), still bKash money.
+        $bkashDonation = $sumKeys(['bkash-payment', 'bkash payment']);
+        $nagadDonation = $sumKeys(['nagad']);
+        $rocketDonation = $sumKeys(['rocket']);
+        $bankDonation = $sumKeys(['bank']);
+        $cashDonation = $sumKeys(['cash']);
+        $goodsDonation = $sumKeys(['goods']);
+
+        $totalDonation = round($bkashDonation + $nagadDonation + $rocketDonation + $bankDonation + $cashDonation + $goodsDonation, 2);
+        $coCharge = round(($bkashDonation + $nagadDonation + $rocketDonation) * 0.015, 2);
+        $netDonation = round($totalDonation - $coCharge, 2);
+
+        // ---- Section 2: SSLCommerz ----
+        // Fee bucket comes from the card_brand SSLCommerz returned at validation
+        // (payments.meta->sslcz_validation): MFS @ 2.5%, Card @ 3.5%. A channel that
+        // can't be classified stays in gross but gets no guessed fee.
         $sslGroupSums = Payment::query()
             ->join('payment_gateways', 'payments.payment_gateway_id', '=', 'payment_gateways.id')
             ->where('payments.status', 'success')
             ->where('payment_gateways.key', 'sslcommerz')
+            ->whereHas('donation', function ($query) {
+                $query->where('status', 1);
+            })
             ->select(
                 DB::raw(SslCommerzChannel::feeGroupSqlExpression() . ' as fee_group'),
                 DB::raw('SUM(payments.amount) as gross')
@@ -118,29 +85,35 @@ $gatewaySums = Payment::join('payment_gateways', 'payments.payment_gateway_id', 
         $sslCommerzGross = round($sslMfsGross + $sslCardGross + $sslUnknownGross, 2);
         $sslCommerzNet = round($sslCommerzGross - $sslCommerzFee, 2);
 
-        $totalCoCharge = round(($totalMBDonation / 100 * 1.5) + $sslCommerzFee, 2);
+        // ---- Section 3: balances ----
+        // Loan and bank balance come from Manual Submissions (ledger rows, no donation).
+        $manualSubmissionSum = fn (string $key) => round((float) ManualSubmission::join('payments', 'manual_submissions.payment_id', '=', 'payments.id')
+            ->join('payment_gateways', 'payments.payment_gateway_id', '=', 'payment_gateways.id')
+            ->where('payments.status', 'success')
+            ->where('payment_gateways.key', $key)
+            ->sum('payments.amount'), 2);
 
+        $totalNetDonation = round($netDonation + $sslCommerzNet, 2);
+        $sdfTakenLoan = $manualSubmissionSum('sdf-taken-loan');
+        $totalExpense = round((float) Expense::approved()->sum('amount'), 2);
+        $netBalance = round($totalNetDonation + $sdfTakenLoan - $totalExpense, 2);
+        $bankBalance = $manualSubmissionSum('bank-balance');
+        // No SSLCommerz settlement/withdrawal is recorded in the system, so the
+        // money still held at SSLCommerz is its net donation after fees.
+        $sslCommerzBalance = $sslCommerzNet;
+        $mfsBalance = round($netBalance - $bankBalance - $sslCommerzBalance, 2);
 
-        $netDonation = $totalDonation - $totalCoCharge;
-        
-        $netBalance = ($netDonation + $sdfTakenLoan)  - $totalExpense;
-        
-        $finalB = $netBalance - $bankBalance;
-        
-    
-        // 5. Pass all data to the view
         return view('admin.report.account_summary', compact(
             'title',
-            'finalB',
-            'gatewaySums',
-            'totalDonation',
-            'totalCoCharge',
-            'netDonation',
-            'totalExpense',
-            'sdfTakenLoan',
+            'bkashDonation',
+            'nagadDonation',
+            'rocketDonation',
+            'bankDonation',
             'cashDonation',
-            'netBalance',
-            'bankBalance',
+            'goodsDonation',
+            'totalDonation',
+            'coCharge',
+            'netDonation',
             'sslMfsGross',
             'sslCardGross',
             'sslUnknownGross',
@@ -149,6 +122,13 @@ $gatewaySums = Payment::join('payment_gateways', 'payments.payment_gateway_id', 
             'sslCommerzFee',
             'sslCommerzGross',
             'sslCommerzNet',
+            'totalNetDonation',
+            'sdfTakenLoan',
+            'totalExpense',
+            'netBalance',
+            'bankBalance',
+            'sslCommerzBalance',
+            'mfsBalance',
         ));
     }
     
@@ -165,15 +145,20 @@ $to = $request->get('to', now()->endOfMonth()->toDateString());
     ->select('payment_gateway_id', DB::raw('SUM(amount) as total'))
     // Add the date filter here
     ->whereBetween('created_at', [
-        Carbon::parse($from)->startOfDay(), 
+        Carbon::parse($from)->startOfDay(),
         Carbon::parse($to)->endOfDay()
     ])
     ->whereHas('paymentGateway', function ($query) {
         $query->where('for_admin', 0);
     })
-    ->with('paymentGateway:id,name') 
+    // Only actual approved donations count here, not raw manual-submission
+    // ledger entries that happen to be recorded against a donor-facing gateway.
+    ->whereHas('donation', function ($query) {
+        $query->where('status', 1);
+    })
+    ->with('paymentGateway:id,name')
     ->groupBy('payment_gateway_id')
-    ->get();  
+    ->get();
     
     $cashDonation = Payment::success()
     ->whereBetween('created_at', [$from, $to]) // Apply the time filter here
@@ -247,9 +232,10 @@ public function reportSummaryPdf(Request $request)
         ->select('payment_gateway_id', DB::raw('SUM(amount) as total'))
         ->whereBetween('created_at', [Carbon::parse($from)->startOfDay(), Carbon::parse($to)->endOfDay()])
         ->whereHas('paymentGateway', function ($query) { $query->where('for_admin', 0); })
-        ->with('paymentGateway:id,name') 
+        ->whereHas('donation', function ($query) { $query->where('status', 1); })
+        ->with('paymentGateway:id,name')
         ->groupBy('payment_gateway_id')
-        ->get();  
+        ->get();
 
     $totalDonation = $gatewaySums->sum('total');
 

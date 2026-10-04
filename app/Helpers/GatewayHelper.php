@@ -203,7 +203,9 @@ trait GatewayHelper
             $recipient?->phone_number,
             (float) $payment->amount,
             $recipient,
-            $payment->id
+            $payment->id,
+            'donation_online',
+            $payment->transaction_no
         );
     }
 

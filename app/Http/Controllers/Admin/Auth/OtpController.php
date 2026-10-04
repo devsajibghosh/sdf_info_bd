@@ -3,16 +3,13 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdminLogin;
 use App\Models\AdminOtpChallenge;
 use App\Services\AdminOtpService;
-use Browser;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
@@ -111,7 +108,7 @@ class OtpController extends Controller
 
             RateLimiter::clear($this->resendThrottleKey($locked->admin_id));
 
-            $this->recordSuccessfulLogin($admin, $request);
+            $this->otpService->recordSuccessfulLogin($admin, $request);
 
             Log::info('Admin OTP verification succeeded', ['admin_id' => $admin->id]);
 
@@ -178,30 +175,5 @@ class OtpController extends Controller
         return redirect()->route('admin.login')->withErrors([
             'username' => __('Your login session has expired. Please log in again.'),
         ]);
-    }
-
-    protected function recordSuccessfulLogin($admin, Request $request): void
-    {
-        try {
-            $ip = $request->ip();
-            $response = Http::timeout(3)->get("http://ip-api.com/json/{$ip}");
-
-            $admin->last_login = now();
-            $admin->save();
-
-            $adminLogin              = new AdminLogin();
-            $adminLogin->admin_id    = $admin->id;
-            $adminLogin->device_type = Browser::deviceType();
-            $adminLogin->browser     = Browser::browserName();
-            $adminLogin->os          = Browser::platformName();
-            $adminLogin->ip          = $ip;
-            $adminLogin->country     = $response['country'] ?? 'Unknown';
-            $adminLogin->city        = $response['city'] ?? 'Unknown';
-            $adminLogin->save();
-        } catch (\Throwable $e) {
-            // Never let device/geo logging failures block a legitimate, already
-            // OTP-verified login.
-            Log::warning('Failed to record admin login metadata', ['message' => $e->getMessage()]);
-        }
     }
 }

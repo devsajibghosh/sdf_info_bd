@@ -18,97 +18,82 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- Individual Gateway Breakdown --}}
-                    @foreach($gatewaySums as $gateway)
+                    {{-- Section 1: manual gateways (approved donations only, SSLCommerz excluded) --}}
+                    <tr class="section-row"><td colspan="2">@lang('Section 1: Manual Donations')</td></tr>
+                    @foreach([
+                        ['1', __('bKash Donation'), $bkashDonation],
+                        ['2', __('Nagad Donation'), $nagadDonation],
+                        ['3', __('Rocket Donation'), $rocketDonation],
+                        ['4', __('Bank Donation'), $bankDonation],
+                        ['5', __('Cash Donation'), $cashDonation],
+                        ['6', __('Goods Donation'), $goodsDonation],
+                    ] as [$no, $label, $amount])
                         <tr class="gateway-row">
-                            <td>
-                                <span class="dot"></span>
-                                {{ $gateway->display_name ?? __('Unknown') }} @lang('Donation')
-                            </td>
-                            <td class="fw-bold text-end">{{ number_format($gateway->total, 2) }}</td>
+                            <td><span class="dot"></span>{{ $no }}. {{ $label }}</td>
+                            <td class="fw-bold text-end">{{ number_format($amount, 2) }}</td>
                         </tr>
                     @endforeach
-                    
-                    <!-- cash donation amount-->
-                    
-                    <tr>
-                        <td>
-                            <span class="dot"></span>
-                            @lang('Cash Donation')
-                        </td>
-                        <td class="text-success text-end">{{ number_format($cashDonation, 2) }}</td>
-                    </tr>
-                    
-                    <tr class="highlight-row bg-dark">
-                        <td class="fw-bold text-primary">@lang('Total Donation')</td>
+                    <tr class="highlight-row">
+                        <td class="fw-bold text-primary">7. @lang('Total Donation') <small class="text-muted">(1-6)</small></td>
                         <td class="fw-bold text-primary text-end">{{ number_format($totalDonation, 2) }}</td>
                     </tr>
+                    <tr class="expense-text">
+                        <td>8. @lang('CO Charge') <small class="text-muted">(@lang('1.5% of') 1-3)</small></td>
+                        <td class="text-danger text-end">- {{ number_format($coCharge, 2) }}</td>
+                    </tr>
+                    <tr class="net-donation-row">
+                        <td class="fw-bold">9. @lang('Net Donation') <small class="text-muted">(7 - 8)</small></td>
+                        <td class="fw-bold text-end">{{ number_format($netDonation, 2) }}</td>
+                    </tr>
 
-                    <tr class="divider-row"><td colspan="2"></td></tr>
-
-                    {{-- SSLCommerz Gross / Fee / Net breakdown, derived from the actual
-                         card_brand SSLCommerz returned per transaction: MFS (bKash/Nagad/
-                         Rocket/etc.) @ 2.5%, Card (VISA/MASTER/AMEX) @ 3.5%. --}}
+                    {{-- Section 2: SSLCommerz (confirmed + approved only) --}}
+                    <tr class="section-row"><td colspan="2">@lang('Section 2: SSLCommerz')</td></tr>
                     <tr class="gateway-row">
-                        <td><span class="dot"></span>@lang('SSLCommerz Gross Donation')</td>
+                        <td><span class="dot"></span>10. @lang('SSLCommerz Gross Donation')</td>
                         <td class="fw-bold text-end">{{ number_format($sslCommerzGross, 2) }}</td>
                     </tr>
                     <tr class="expense-text">
-                        <td>@lang('SSLCommerz Fee')<br><small class="text-muted">@lang('MFS 2.5%'): {{ number_format($sslMfsFee, 2) }} + @lang('Card 3.5%'): {{ number_format($sslCardFee, 2) }}</small></td>
+                        <td>11. @lang('SSLCommerz Fee')<br><small class="text-muted">@lang('MFS 2.5%'): {{ number_format($sslMfsFee, 2) }} + @lang('Card 3.5%'): {{ number_format($sslCardFee, 2) }}</small></td>
                         <td class="text-danger text-end">- {{ number_format($sslCommerzFee, 2) }}</td>
                     </tr>
                     <tr class="gateway-row">
-                        <td><span class="dot"></span>@lang('SSLCommerz Net Donation')</td>
+                        <td><span class="dot"></span>12. @lang('SSLCommerz Unclassified Channel (fee not calculated)')</td>
+                        <td class="text-end">{{ number_format($sslUnknownGross, 2) }}</td>
+                    </tr>
+                    <tr class="net-donation-row">
+                        <td class="fw-bold">13. @lang('SSLCommerz Net Donation') <small class="text-muted">(10 - 11)</small></td>
                         <td class="fw-bold text-end">{{ number_format($sslCommerzNet, 2) }}</td>
                     </tr>
-                    @if($sslUnknownGross > 0)
-                        <tr class="gateway-row">
-                            <td><span class="dot"></span>@lang('SSLCommerz Unclassified Channel (fee not calculated)')</td>
-                            <td class="text-end">{{ number_format($sslUnknownGross, 2) }}</td>
-                        </tr>
-                    @endif
 
-                    <tr class="divider-row"><td colspan="2"></td></tr>
-
-                    {{-- Deductions Section --}}
-                    <tr class="expense-text bg-warning">
-                        <td>@lang('Total CO Charge')<br><small class="text-muted">(@lang('includes SSLCommerz fee'))</small></td>
-                        <td class="text-danger text-end">- {{ number_format($totalCoCharge, 2) }}</td>
+                    {{-- Section 3: balances --}}
+                    <tr class="section-row"><td colspan="2">@lang('Section 3: Balance')</td></tr>
+                    <tr class="highlight-row">
+                        <td class="fw-bold text-primary">14. @lang('Total Net Donation') <small class="text-muted">(9 + 13)</small></td>
+                        <td class="fw-bold text-primary text-end">{{ number_format($totalNetDonation, 2) }}</td>
                     </tr>
-                    
-                    <tr class="net-donation-row bg-dark">
-                        <td class="fw-bold text-white">@lang('Net Donation')</td>
-                        <td class="fw-bold text-end text-white">{{ number_format($netDonation, 2) }}</td>
-                    </tr>
-                    
-                    <!--<tr class="divider-row"><td colspan="2"></td></tr>-->
-
-                    {{-- External Factors --}}
-                    <tr class="bg-warning">
-                        <td class="text-white">@lang('SDF Taken Loan')</td>
-                        <td class="text-white text-end">+ {{ number_format($sdfTakenLoan, 2) }}</td>
+                    <tr>
+                        <td>15. @lang('SDF Taken Loan')</td>
+                        <td class="text-end">+ {{ number_format($sdfTakenLoan, 2) }}</td>
                     </tr>
                     <tr class="expense-text">
-                        <td>@lang('Total Expense')</td>
+                        <td>16. @lang('Total Expense')</td>
                         <td class="text-danger text-end">- {{ number_format($totalExpense, 2) }}</td>
                     </tr>
-
-                    {{-- The Final Balance --}}
                     <tr class="grand-total-row">
-                        <td>@lang('Net Balance')</td>
+                        <td>17. @lang('Net Balance') <small>(14 + 15 - 16)</small></td>
                         <td class="text-end">{{ number_format($netBalance, 2) }}</td>
                     </tr>
-
-                    <tr class="divider-row"><td colspan="2"></td></tr>
-
-                    {{-- Physical/Bank Locations --}}
                     <tr class="bank-row">
-                        <td class="text-muted">@lang('Bank Balance')</td>
+                        <td class="text-muted">18. @lang('Bank Balance')</td>
                         <td class="text-dark text-end">{{ number_format($bankBalance, 2) }}</td>
                     </tr>
+                    <tr class="bank-row">
+                        <td class="text-muted">19. @lang('SSLCommerz Balance')</td>
+                        <td class="text-dark text-end">{{ number_format($sslCommerzBalance, 2) }}</td>
+                    </tr>
                     <tr class="bank-row border-0">
-                        <td class="text-muted">@lang('Mobile Banking Balance')</td>
-                        <td class="text-dark text-end">{{ number_format($finalB, 2) }}</td>
+                        <td class="fw-bold">20. @lang('MFS Balance') <small class="text-muted">(17 - 18 - 19)</small></td>
+                        <td class="fw-bold text-dark text-end">{{ number_format($mfsBalance, 2) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -197,6 +182,16 @@
         color: #ffffff !important;
         font-weight: 700;
         font-size: 1.2rem;
+    }
+
+    .section-row td {
+        background-color: #f1f4f9;
+        color: #4e5e7a;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.6rem 1.5rem;
     }
 
     .divider-row td {

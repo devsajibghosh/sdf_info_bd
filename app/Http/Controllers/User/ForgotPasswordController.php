@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Helpers\BulkSmsHelper;
+use App\Models\SmsTemplate;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -69,7 +70,13 @@ class ForgotPasswordController extends Controller
             $user->otp_sent_at = now();
             $user->save();
 
-            (new BulkSmsHelper())->send($user->phone_number, "Your OTP for SDF password reset is: {$otpCode}");
+            $result = (new BulkSmsHelper())->send($user->phone_number, (string) SmsTemplate::render('password_reset_otp', ['code' => $otpCode]));
+
+            if (empty($result['success'])) {
+                Log::error('Password reset OTP SMS send failed', ['phone' => $user->phone_number, 'status' => $result['status'] ?? null, 'body' => $result['body'] ?? null]);
+
+                return back()->withErrors(['phone_number' => 'Failed to send OTP. Please check SMS configuration.']);
+            }
 
             return redirect()
                 ->route('password.otp.form')

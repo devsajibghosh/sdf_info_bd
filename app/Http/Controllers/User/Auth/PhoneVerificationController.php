@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\User\Auth;
 
+use App\Helpers\BulkSmsHelper;
+use App\Models\SmsTemplate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 
@@ -34,10 +37,16 @@ class PhoneVerificationController extends Controller
         $user->otp_sent_at = now();
         $user->save();
 
-        (new \App\Helpers\BulkSmsHelper())->send(
+        $result = (new BulkSmsHelper())->send(
             $user->phone_number,
-            "Your one-time SDF password is: {$code}"
+            (string) SmsTemplate::render('phone_verification_otp', ['code' => $code])
         );
+
+        if (empty($result['success'])) {
+            Log::error('Phone verification OTP SMS send failed', ['phone' => $user->phone_number, 'status' => $result['status'] ?? null, 'body' => $result['body'] ?? null]);
+
+            return back()->with('error', 'Failed to send OTP. Please check SMS configuration.');
+        }
 
         return back()->with('status', 'otp-sent');
     }

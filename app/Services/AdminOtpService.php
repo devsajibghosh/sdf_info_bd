@@ -3,9 +3,14 @@
 namespace App\Services;
 
 use App\Helpers\BulkSmsHelper;
+use App\Models\SmsTemplate;
 use App\Models\Admin;
+use App\Models\AdminLogin;
 use App\Models\AdminOtpChallenge;
+use Browser;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -101,7 +106,7 @@ class AdminOtpService
         }
 
         try {
-            $message = "Your SDF admin login verification code is: {$code}. It expires in 1 minute.";
+            $message = (string) SmsTemplate::render('admin_login_otp', ['code' => $code, 'name' => $admin->name]);
 
             $result = (new BulkSmsHelper())->send($admin->phone_number, $message);
 
@@ -138,5 +143,34 @@ class AdminOtpService
         }
 
         return substr($phone, 0, 2) . str_repeat('*', $len - 5) . substr($phone, -3);
+    }
+
+    /**
+     * Login history row (Reports > Admin Login) for an admin who just got a
+     * dashboard session, with or without the OTP step.
+     */
+    public function recordSuccessfulLogin($admin, Request $request): void
+    {
+        try {
+            $ip = $request->ip();
+            $response = Http::timeout(3)->get("http://ip-api.com/json/{$ip}");
+
+            $admin->last_login = now();
+            $admin->save();
+
+            $adminLogin              = new AdminLogin();
+            $adminLogin->admin_id    = $admin->id;
+            $adminLogin->device_type = Browser::deviceType();
+            $adminLogin->browser     = Browser::browserName();
+            $adminLogin->os          = Browser::platformName();
+            $adminLogin->ip          = $ip;
+            $adminLogin->country     = $response['country'] ?? 'Unknown';
+            $adminLogin->city        = $response['city'] ?? 'Unknown';
+            $adminLogin->save();
+        } catch (\Throwable $e) {
+            // Never let device/geo logging failures block a legitimate, already
+            // OTP-verified login.
+            Log::warning('Failed to record admin login metadata', ['message' => $e->getMessage()]);
+        }
     }
 }

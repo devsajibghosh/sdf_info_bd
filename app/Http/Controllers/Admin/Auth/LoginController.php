@@ -99,6 +99,15 @@ class LoginController extends Controller
 
             $admin = Auth::guard('admin')->getLastAttempted();
 
+            // OTP step switched off in Settings > SMS Settings: password alone grants the session.
+            if (!generalSetting('admin_login_otp')) {
+                Auth::guard('admin')->login($admin, $request->boolean('remember'));
+                $request->session()->regenerate();
+                $otpService->recordSuccessfulLogin($admin, $request);
+
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
             $result = $otpService->issueChallenge($admin, $request->ip());
 
             if (!$result['success']) {

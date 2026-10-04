@@ -15,10 +15,12 @@ use App\Models\Donor;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\Gallery;
+use App\Models\GeneralSetting;
 use App\Models\PageView;
 use App\Models\Payment;
 use App\Models\Project;
 use App\Models\SiteVisit;
+use App\Models\SmsTemplate;
 use App\Models\User;
 use App\Services\FileManager;
 use App\Services\FileService;
@@ -290,6 +292,77 @@ class AdminController extends Controller
         return view('admin.setting.notification', compact('title', 'generalSetting'));
     }
 
+    public function smsSetting()
+    {
+        goIfUserCan('settings');
+        $title = __('SMS Settings');
+
+        $generalSetting = generalSetting();
+        $templates = SmsTemplate::all()->keyBy('key');
+        $events = SmsTemplate::EVENTS;
+
+        return view('admin.setting.sms', compact('title', 'generalSetting', 'templates', 'events'));
+    }
+
+    public function updateSmsSetting(Request $request)
+    {
+        goIfUserCan('settings');
+
+        $rules = [];
+        foreach (SmsTemplate::EVENTS as $key => $event) {
+            $rule = ['required', 'string', 'max:1000'];
+            if ($event['otp']) {
+                // Without {code} the member/admin would get an SMS with no OTP in it.
+                $rule[] = 'regex:/\{code\}/';
+            }
+            $rules["templates.{$key}.message"] = $rule;
+        }
+
+        try {
+            $request->validate($rules, [
+                'templates.*.message.regex'    => __('OTP messages must contain the {code} placeholder.'),
+                'templates.*.message.required' => __('Message can not be empty.'),
+            ]);
+        } catch (ValidationException $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'errors'  => $e->errors(),
+                    'message' => collect($e->errors())->flatten()->first() ?? 'Validation failed',
+                    'success' => false,
+                ], 422);
+            }
+
+            throw $e;
+        }
+
+        DB::transaction(function () use ($request) {
+            $setting = GeneralSetting::first();
+            $setting->sms_enabled = $request->boolean('sms_enabled');
+            $setting->admin_login_otp = $request->boolean('admin_login_otp');
+            $setting->save();
+
+            foreach (SmsTemplate::EVENTS as $key => $event) {
+                SmsTemplate::updateOrCreate(['key' => $key], [
+                    'message' => trim($request->input("templates.{$key}.message")),
+                    // OTP templates are always on; only the admin-login OTP has a switch (above).
+                    'status'  => $event['otp'] ? true : $request->boolean("templates.{$key}.status"),
+                ]);
+            }
+        });
+
+        System::clearCache();
+        SmsTemplate::clearCache();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'message' => __('SMS settings saved successfully'),
+                'success' => true,
+            ]);
+        }
+
+        return back()->withSuccess(__('SMS settings saved successfully'));
+    }
+
     public function configurationSetting()
     {
         goIfUserCan('settings');
@@ -530,7 +603,22 @@ class AdminController extends Controller
         }
 
         try {
-            (new BulkSmsHelper())->send($request->phone_number, $request->message);
+            $result = (new BulkSmsHelper())->send($request->phone_number, $request->message);
+
+            if (empty($result['success'])) {
+                Log::error('Test SMS failed', ['status' => $result['status'] ?? null, 'body' => $result['body'] ?? null]);
+
+                $message = 'Failed to send test SMS. Gateway response: ' . ($result['body'] ?? 'no response');
+
+                if ($request->ajax()) {
+                    return response()->json([
+                        'message' => $message,
+                        'success' => false,
+                    ], 500);
+                }
+
+                return back()->withErrors($message);
+            }
 
             if ($request->ajax()) {
                 return response()->json([

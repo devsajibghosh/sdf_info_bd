@@ -57,6 +57,8 @@ RoutesHelper::registerAdminRoutes(function () {
             Route::post('/notification', 'updateNotificationSetting')->name('notification.update');
             Route::post('/general', 'updateGeneralSetting')->name('general.update');
             Route::get('/configuration', 'configurationSetting')->name('configuration');
+            Route::get('/sms', 'smsSetting')->name('sms');
+            Route::post('/sms', 'updateSmsSetting')->name('sms.update');
             Route::get('/server-information', 'serverInformation')->name('server.information');
             Route::post('/configuration', 'updateConfigurationSetting')->name('configuration.update');
         });

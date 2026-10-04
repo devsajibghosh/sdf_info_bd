@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Helpers\BulkSmsHelper;
+use App\Models\SmsTemplate;
 use App\Http\Controllers\Controller;
 use App\Models\Donor;
 use App\Models\User;
@@ -64,7 +65,15 @@ class LoginController extends Controller
             $user->otp_sent_at = now();
             $user->save();
 
-            (new BulkSmsHelper())->send($request->phone_number, "Your one time SDF password is: {$code}");
+            $result = (new BulkSmsHelper())->send($request->phone_number, (string) SmsTemplate::render('user_login_otp', ['code' => $code]));
+
+            if (empty($result['success'])) {
+                Log::error('OTP SMS send failed', ['phone' => $request->phone_number, 'status' => $result['status'] ?? null, 'body' => $result['body'] ?? null]);
+
+                return $request->ajax()
+                    ? response()->json(['message' => 'Failed to send OTP. Please check SMS configuration.', 'success' => false], 500)
+                    : back()->withErrors('Failed to send OTP. Please check SMS configuration.');
+            }
 
             return $request->ajax()
                 ? response()->json([

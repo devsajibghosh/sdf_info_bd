@@ -20,7 +20,7 @@ class PaymentGateway extends Model
     }
     
     public function scopeHidden($q){
-        return $q->whereNotIn('key', ['goods', 'cash'])->where('for_admin', 0);
+        return $q->whereNotIn('key', ['goods', 'cash'])->where('for_admin', 0)->where('manual', 0);
     }
 
     public function scopeAutomatic($query)

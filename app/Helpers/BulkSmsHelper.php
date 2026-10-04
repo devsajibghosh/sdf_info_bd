@@ -38,8 +38,14 @@ class BulkSmsHelper
             'message'  => $message,
         ]);
 
+        // BulkSMSBD always answers with HTTP 200, even for a rejected request
+        // (bad api_key, unapproved sender id, insufficient balance, ...); the
+        // real outcome is the `response_code` field in the JSON body, where
+        // 202 is the only value that means the SMS was actually accepted.
+        $responseCode = $response->json('response_code');
+
         return [
-            'success' => $response->successful(),
+            'success' => $response->successful() && (int) $responseCode === 202,
             'status'  => $response->status(),
             'body'    => $response->body(),
         ];

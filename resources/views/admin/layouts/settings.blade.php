@@ -36,6 +36,13 @@
                     </li>
 
                     <li>
+                        <a href="{{ route('admin.setting.sms') }}" class="{{ activeClass('admin.setting.sms') }}">
+                            <x-icons.bell />
+                            @lang('SMS Settings')
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="{{ route('admin.setting.language.list') }}" class="{{ activeClass('admin.setting.language.list') }}">
                             <x-icons.list />
                             @lang('Languages')

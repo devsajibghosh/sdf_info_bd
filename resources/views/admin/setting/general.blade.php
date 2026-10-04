@@ -137,6 +137,20 @@
                     </div>
                 </x-card>
             </form>
+
+            <x-card class="mt-3">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h5 class="mb-1">@lang('SMS Settings')</h5>
+                        <small class="text-muted">
+                            @lang('Donation SMS:') <strong>{{ $generalSetting['sms_enabled'] ? __('On') : __('Off') }}</strong> ·
+                            @lang('Admin Login OTP:') <strong>{{ $generalSetting['admin_login_otp'] ? __('On') : __('Off') }}</strong>
+                            — @lang('edit every donor/member SMS and OTP message')
+                        </small>
+                    </div>
+                    <a href="{{ route('admin.setting.sms') }}" class="btn btn-primary">@lang('Configure SMS')</a>
+                </div>
+            </x-card>
         </div>
     </div>
 @endsection

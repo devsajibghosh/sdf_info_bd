@@ -409,7 +409,9 @@ public function downloadMonthlyExcel()
             $donation->phone_number ?: $recipient?->phone_number,
             (float) $donation->amount,
             $recipient,
-            $donation->id
+            $donation->id,
+            'donation_manual',
+            $donation->payment?->transaction_no
         );
 
         return to_route('admin.donation.list')->withSuccess(__('Donation successfully saved'));
@@ -602,7 +604,9 @@ public function autoApproveApi(Request $request)
                 $phone,
                 (float) $donation->amount,
                 $recipient,
-                $donation->id
+                $donation->id,
+                'donation_approved',
+                $donation->payment?->transaction_no
             );
 
             // ৪. ডোনেশন আপডেট
