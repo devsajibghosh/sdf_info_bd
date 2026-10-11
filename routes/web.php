@@ -94,7 +94,7 @@ Route::middleware('count_site_visit')->group(function () {
             Route::get('/login', 'login')->name('login');
             Route::post('/login', 'loginStore')->name('login.store');
             Route::post('/otp-login', 'otpLoginStore')->name('login.otp.store');
-            Route::post('/otp-login-check', 'validateOtpAndLogin')->name('login.otp.validate');
+            Route::post('/otp-login-check', 'validateOtpAndLogin')->middleware('throttle:10,1')->name('login.otp.validate');
         });
 
         Route::middleware('auth')->group(function () {

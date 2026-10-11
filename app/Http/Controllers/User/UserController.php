@@ -85,7 +85,7 @@ class UserController extends Controller
     {
         $title = __('My Donations');
 
-        $donations = auth()->guard('donor')->user()->donations()->paginate();
+        $donations = auth()->guard('donor')->user()->donations()->with('category')->latest()->paginate();
         
         return view('user.donor_donations', compact('title', 'donations'));
     }
@@ -254,39 +254,51 @@ class UserController extends Controller
         return to_route('user.dashboard')->withSuccess(__('Profile completed successfully.'));
     }
 
-    public function logoutDonorUser() {
+    public function logoutDonorUser(Request $request)
+    {
+        // Only drop the donor guard; don't invalidate the whole session (an admin
+        // may be logged in on the same browser session).
         Auth::guard('donor')->logout();
-        return back()->withSuccess(__('You are logged out'));
+        $request->session()->regenerateToken();
+
+        return to_route('login')->withSuccess(__('You are logged out'));
     }
-    
+
     public function donorProfile()
     {
-        $title = 'Donor Profile';
+        $title = __('Donor Profile');
         $donor = auth()->guard('donor')->user();
-        return view('user.donor_profile', compact('title', 'donor'));
+
+        $successDonations = $donor->donations()->success();
+
+        $widget = [
+            'total_donate_count'  => (clone $successDonations)->count(),
+            'total_donate_amount' => (clone $successDonations)->sum('amount'),
+            'last_donation'       => (clone $successDonations)->latest()->first(),
+            'pending_count'       => $donor->donations()->pending()->count(),
+        ];
+
+        $recentDonations = $donor->donations()->with('category')->latest()->take(5)->get();
+
+        return view('user.donor_profile', compact('title', 'donor', 'widget', 'recentDonations'));
     }
 
     public function donorProfileSubmit(Request $request)
     {
         $donor = auth()->guard('donor')->user();
 
-        $request->validate([
-            'name'         => 'required|string|max:255', 
-            'father_name'  => 'nullable|string|max:255',
-            'mother_name'  => 'nullable|string|max:255',
-            'address'      => 'nullable|string|max:500',
+        // phone_number is the donor's login identity, so it is never editable here
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'name_en'     => 'nullable|string|max:255',
+            'father_name' => 'nullable|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
+            'address'     => 'nullable|string|max:255',
         ]);
 
-        $donor->update([
-            'name'         => $request->name, 
-            'father_name'  => $request->father_name,
-            'mother_name'  => $request->mother_name,
-            'address'      => $request->address,
-        ]);
+        $donor->update($validated);
 
-        return redirect()
-            ->back()
-            ->with('success', __('Profile updated successfully.'));
+        return to_route('user.donor.profile')->withSuccess(__('Profile updated successfully.'));
     }
 
 

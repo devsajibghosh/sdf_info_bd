@@ -32,6 +32,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'donor.api' => \App\Http\Middleware\CheckDonorApiKey::class,
             'guest.any' => \App\Http\Middleware\GuestAnyGuard::class,
+            'auth.donor'       => \App\Http\Middleware\DonorAuthenticate::class,
+            'donor.to.profile' => \App\Http\Middleware\RedirectDonorToProfile::class,
             'auth.both'        => AuthBoth::class,
             'auth'             => Authenticate::class,
             'admin.guest'      => RedirectIfAdmin::class,

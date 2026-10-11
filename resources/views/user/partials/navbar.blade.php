@@ -77,13 +77,22 @@
 
                     @if(auth()->guard('donor')->check())
                         <li class="nav-item">
-                            <a class="nav-link {{ activeClass('user.dashboard') }}" href="{{ route('user.dashboard') }}">@lang('My Profile')</a>
+                            <a class="nav-link {{ activeClass('user.donor.profile') }}" href="{{ route('user.donor.profile') }}">@lang('My Profile')</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ activeClass('user.donor.donations') }}" href="{{ route('user.donor.donations') }}">@lang('My Donations')</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('user.donor.logout') }}">@lang('Sign Out')</a>
+                            <a class="nav-link {{ activeClass('site.donate') }}" href="{{ route('site.donate') }}">@lang('Donate')</a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{{ route('user.donor.logout') }}" method="POST">
+                                @csrf
+                                <button class="btn btn--sm ms-2 btn-danger" type="submit">
+                                    <x-icons.logout />
+                                    @lang('Logout')
+                                </button>
+                            </form>
                         </li>
                     @else
                         <li class="nav-item">

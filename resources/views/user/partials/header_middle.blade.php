@@ -16,15 +16,23 @@
 
                 </div>
                 <div class="header-middle__author">
-                    @if(auth()->check() || auth()->guard('donor')->check())
+                    @if(auth()->check())
                         <a href="{{ route('user.dashboard') }}" class="btn btn--base btn--sm">@lang('Dashboard')</a>
+                    @elseif(auth()->guard('donor')->check())
+                        <a href="{{ route('user.donor.profile') }}" class="btn btn--base btn--sm">@lang('My Profile')</a>
                     @endif
 
                     @if(!auth()->check() && !auth()->guard('donor')->check())
                         <a href="{{ route('login') }}" class="btn btn--base btn--sm">@lang('Login')</a>
                     @endif
                     
-                    @if(!auth()->guard('donor')->check())
+                    @if(auth()->guard('donor')->check() && !auth()->check())
+                        <a href="{{ route('site.donate') }}" class="btn btn--base btn--sm">@lang('Donate')</a>
+                        <form action="{{ route('user.donor.logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-danger btn--sm">@lang('Logout')</button>
+                        </form>
+                    @else
                         @auth
                             <a href="{{ route('user.payment.new') }}" class="btn btn--base btn--sm">@lang('Donate')</a>
                         @else

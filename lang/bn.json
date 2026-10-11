@@ -550,7 +550,6 @@
     "Please accept the Terms & Conditions, Privacy Policy, and Refund & Return Policy before proceeding with payment.": "পেমেন্ট করার আগে Terms & Conditions, Privacy Policy এবং Refund & Return Policy গ্রহণ করুন।",
     "Please confirm your password": "আপনার পাসওয়ার্ড নিশ্চিত করুন",
     "Please donate at least 20 tk": "অনুগ্রহ করে অন্তত ২০ টাকা দান করুন",
-    "Enter amount": "পরিমাণ লিখুন",
     "Please download the sample file by": "দ্বারা নমুনা ফাইল ডাউনলোড করুন",
     "Please download the sample file by ": "অনুগ্রহ করে নমুনা ফাইলটি ডাউনলোড করুন ",
     "Please enter a new password": "একটি নতুন পাসওয়ার্ড লিখুন",
@@ -873,5 +872,16 @@
     "The uploaded file is too large for the server to accept. Please upload a smaller file and try again.": "আপলোড করা ফাইলটি সার্ভারের গ্রহণযোগ্য সীমার চেয়ে বড়। অনুগ্রহ করে একটি ছোট ফাইল আপলোড করে আবার চেষ্টা করুন।",
     "An unknown error occurred.": "একটি অজানা সমস্যা হয়েছে।",
     "The server rejected this request because the uploaded file is too large.": "আপলোড করা ফাইলটি অনেক বড় হওয়ায় সার্ভার এই অনুরোধটি গ্রহণ করেনি।",
-    "The selected donation category is not available. Please choose another one.": "নির্বাচিত তহবিলটি বর্তমানে উপলব্ধ নয়। অনুগ্রহ করে অন্য একটি তহবিল নির্বাচন করুন।"
+    "The selected donation category is not available. Please choose another one.": "নির্বাচিত তহবিলটি বর্তমানে উপলব্ধ নয়। অনুগ্রহ করে অন্য একটি তহবিল নির্বাচন করুন।",
+    "Donor Profile": "দাতার প্রোফাইল",
+    "Name (English)": "নাম (ইংরেজি)",
+    "Phone number is used for OTP login and cannot be changed.": "ফোন নম্বরটি OTP লগইনের জন্য ব্যবহৃত হয় এবং পরিবর্তন করা যাবে না।",
+    "Total Amount": "মোট পরিমাণ",
+    "Last Donation": "সর্বশেষ অনুদান",
+    "Donor Since": "দাতা হওয়ার তারিখ",
+    "Recent Donations": "সাম্প্রতিক অনুদান",
+    "View All": "সব দেখুন",
+    "Logged in successfully.": "সফলভাবে লগইন হয়েছে।",
+    "Please login with your phone number first.": "অনুগ্রহ করে প্রথমে আপনার ফোন নম্বর দিয়ে লগইন করুন।",
+    "Receipt": "রসিদ"
 }

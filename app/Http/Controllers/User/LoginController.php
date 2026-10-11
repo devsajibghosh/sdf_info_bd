@@ -106,36 +106,32 @@ class LoginController extends Controller
                 : back()->withErrors('Donor not found.');
         }
 
-        // Check if OTP matches
-        if ($user->otp_code !== $request->otp_code) {
+        // Check if OTP matches (constant-time compare; otp_code is a varchar column)
+        if (! $user->otp_code || ! hash_equals((string) $user->otp_code, (string) $request->otp_code)) {
             return $request->ajax()
                 ? response()->json(['message' => 'Invalid OTP.', 'success' => false], 422)
                 : back()->withErrors('Invalid OTP.');
         }
 
-        // Check if OTP is expired (older than 2 minutes)
-        if (!$user->otp_sent_at || now()->diffInSeconds($user->otp_sent_at) > 120) {
+        // Check if OTP is expired (older than 2 minutes). Carbon 3's diffInSeconds()
+        // is signed, so measure from otp_sent_at forward to now to get a positive value.
+        if (! $user->otp_sent_at || $user->otp_sent_at->diffInSeconds(now()) > 120) {
             return $request->ajax()
                 ? response()->json(['message' => 'OTP has expired. Please request a new one.', 'success' => false], 410)
                 : back()->withErrors('OTP has expired. Please request a new one.');
         }
 
-        // OTP is valid, log in the user
-        Auth::guard('donor')->login($user);
-
-        // Optionally, clear the OTP after successful login
-        $user->otp_code = null;
+        // OTP is valid: clear it so it can't be reused, then log the donor in
+        $user->otp_code    = null;
         $user->otp_sent_at = null;
-        if(@$user->donator) {
-            $user->pv  = 1;
-            $user->phone_verified_at = now();
-        }
         $user->save();
 
-        return to_route('user.dashboard');
+        Auth::guard('donor')->login($user);
+        $request->session()->regenerate();
+
         return $request->ajax()
-            ? response()->json(['message' => 'Logged in successfully.', 'success' => true])
-            : redirect()->intended('/user/dashboard')->withSuccess('Logged in successfully.');
+            ? response()->json(['message' => __('Logged in successfully.'), 'success' => true, 'redirect' => route('user.donor.profile')])
+            : to_route('user.donor.profile')->withSuccess(__('Logged in successfully.'));
     }
 
     public function loginStore(Request $request)
